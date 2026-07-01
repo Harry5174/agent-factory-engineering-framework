@@ -1,36 +1,56 @@
 # Next Session Handoff Template
 
-> **Instructions:** Fill in this template at the end of a sprint to prepare context for the next session.
+> **Purpose:** Prepare all context the next session needs to start without drift or hallucinated state.
+>
+> **When to use:** At the end of a sprint, after the green-gate review, before closing the session.
+>
+> **Required inputs:** Completion report, gate outcome, current repository state.
+>
+> **Required outputs:** A document the next session can use as its bootstrap context.
+>
+> **Instructions:** Replace all `<PLACEHOLDER>` fields with current values.
+
+---
+
+## Handoff Identity
+
+| Field | Value |
+|-------|-------|
+| **From sprint** | `<CURRENT_SPRINT_NAME>` |
+| **Gate outcome** | `<GREEN / YELLOW / RED>` |
+| **To sprint** | `<NEXT_SPRINT_NAME>` |
+| **Date** | `<DATE>` |
 
 ---
 
 ## What the Next Session Knows
 
-[Describe the state of the project as the next session will find it.]
+> Facts the next session can rely on.
 
-- [fact 1, e.g., "AFDF.0 scaffold is complete and committed"]
-- [fact 2, e.g., "All protocols, templates, and examples are created"]
-- [fact 3, e.g., "Framework lives at `03-agent-factory/development-framework/`"]
+- `<FACT_1>` (e.g., "AFDF.1 templates are hardened and committed")
+- `<FACT_2>` (e.g., "Framework lives at `03-agent-factory/development-framework/`")
+- `<FACT_3>`
 
 ---
 
-## What the Next Session Must Not Assume
+## What the Next Session Must NOT Assume
 
-[List things the next session should verify rather than assume.]
+> The next session must verify these rather than assume them.
 
-- [assumption to avoid 1, e.g., "Do not assume the branch has been merged to main"]
-- [assumption to avoid 2, e.g., "Do not assume Artifact 06 is fully published/tagged"]
-- [assumption to avoid 3]
+- `<ASSUMPTION_TO_AVOID_1>` (e.g., "Do not assume the branch has been merged to main")
+- `<ASSUMPTION_TO_AVOID_2>` (e.g., "Do not assume Artifact 06 is fully published/tagged")
+- Do not assume prior session context is available — start from this handoff
 
 ---
 
 ## Repository State
 
 ```text
-Branch: [current branch]
-Commit: [commit hash]
-Tag: [tag if any, or "none"]
-Clean: [yes/no]
+Branch: <BRANCH_NAME>
+Commit: <COMMIT_HASH>
+Base: <BASE_COMMIT>
+Tag: <TAG_OR_NONE>
+Clean: <yes/no>
 ```
 
 ---
@@ -39,25 +59,40 @@ Clean: [yes/no]
 
 | Artifact | Status |
 |----------|--------|
-| [artifact name] | [current status] |
+| `<ARTIFACT_NAME_1>` | `<STATUS>` |
+| `<ARTIFACT_NAME_2>` | `<STATUS>` |
+
+---
+
+## Product Owner Approval State
+
+| Field | Value |
+|-------|-------|
+| **Current approval scope** | `<WHAT_IS_APPROVED>` |
+| **Pending approvals** | `<WHAT_NEEDS_APPROVAL>` (or "none") |
+| **Expired/consumed approvals** | `<WHAT_WAS_USED>` (or "none") |
 
 ---
 
 ## Approved Decisions
 
-[List decisions approved in this or prior sessions that the next session should honor.]
+> Decisions the next session must honor.
 
 | Decision | Date | Reference |
 |----------|------|-----------|
-| [decision] | [date] | [reference] |
+| `<DECISION>` | `<DATE>` | `<REFERENCE>` |
 
 ---
 
 ## Current Blockers
 
-[List any blockers that would prevent the next sprint from starting.]
+- `<BLOCKER_1>` (or "None")
 
-- [blocker 1, or "None"]
+---
+
+## Follow-Up Items (Yellow Gate Only)
+
+- `<FOLLOW_UP_1>` (or "N/A — gate was GREEN")
 
 ---
 
@@ -66,9 +101,22 @@ Clean: [yes/no]
 The next session should run these commands first to verify state:
 
 ```bash
-[verification command 1]
-[verification command 2]
+git branch --show-current
+git status -sb
+git log --oneline -8
+git check-ignore -v .env || true
+git ls-files .env
 ```
+
+---
+
+## Safety Reminders
+
+- Do not print secrets
+- Do not read or paste `.env`
+- Do not run live external side effects without explicit Product Owner approval
+- Use fake/default mode unless real mode is explicitly approved
+- Record evidence before claiming completion
 
 ---
 
@@ -76,5 +124,5 @@ The next session should run these commands first to verify state:
 
 The next session is expected to produce:
 
-- [ ] [expected output 1]
-- [ ] [expected output 2]
+- [ ] `<EXPECTED_OUTPUT_1>`
+- [ ] `<EXPECTED_OUTPUT_2>`

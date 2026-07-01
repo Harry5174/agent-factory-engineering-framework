@@ -1,6 +1,14 @@
 # Green Gate Review Template
 
-> **Instructions:** Fill in this template when reviewing a sprint's completion report.
+> **Purpose:** Evaluate a sprint's completion report and issue a GREEN / YELLOW / RED gate decision.
+>
+> **When to use:** After receiving a completion report, before approving the next sprint.
+>
+> **Required inputs:** Sprint prompt, completion report, evidence, repository access.
+>
+> **Required outputs:** Gate decision with per-criterion assessments.
+>
+> **Instructions:** Replace all `<PLACEHOLDER>` fields with review findings.
 
 ---
 
@@ -8,18 +16,28 @@
 
 | Field | Value |
 |-------|-------|
-| **Artifact** | [e.g., Artifact 07 — GitHub Repo Steward Agent] |
-| **Sprint** | [e.g., A7.1 — Foundation Scaffold] |
-| **Reviewer** | [who is reviewing] |
-| **Date** | [date] |
+| **Artifact** | `<ARTIFACT_NAME>` |
+| **Sprint** | `<SPRINT_NAME>` |
+| **Reviewer** | `<REVIEWER>` |
+| **Date** | `<DATE>` |
 
 ---
 
 ## Decision
 
-> **Gate outcome: [GREEN / YELLOW / RED]**
+> **Gate outcome: `<GREEN / YELLOW / RED>`**
 
-[One-sentence summary of the decision.]
+`<ONE_SENTENCE_SUMMARY>`
+
+---
+
+## Product Owner Approval Verification
+
+| Field | Status |
+|-------|--------|
+| Approval was obtained before implementation | `<✅ / ⚠️ / ❌>` |
+| Implementation stayed within approval scope | `<✅ / ⚠️ / ❌>` |
+| Approval limitations were respected | `<✅ / ⚠️ / ❌>` |
 
 ---
 
@@ -27,9 +45,9 @@
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| All deliverables completed | [✅ / ⚠️ / ❌] | [notes] |
-| No scope creep | [✅ / ⚠️ / ❌] | [notes] |
-| Out-of-scope items correctly excluded | [✅ / ⚠️ / ❌] | [notes] |
+| All deliverables completed | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| No scope creep | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| Out-of-scope items correctly excluded | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
 
 ---
 
@@ -37,13 +55,17 @@
 
 | Category | Quality | Notes |
 |----------|---------|-------|
-| Branch and commit | [strong / acceptable / weak / missing] | [notes] |
-| Files created/modified | [strong / acceptable / weak / missing] | [notes] |
-| Commands run | [strong / acceptable / weak / missing] | [notes] |
-| Test results | [strong / acceptable / weak / missing] | [notes] |
-| Lint results | [strong / acceptable / weak / missing] | [notes] |
-| Safety scans | [strong / acceptable / weak / missing] | [notes] |
-| Scope confirmations | [strong / acceptable / weak / missing] | [notes] |
+| Branch and commit | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Base commit | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Files created/modified | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Commands run | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Test results | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Lint results | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Secret scans | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Local path scans | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| `.env` verification | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Scope confirmations | `<strong / acceptable / weak / missing>` | `<NOTES>` |
+| Safety confirmations | `<strong / acceptable / weak / missing>` | `<NOTES>` |
 
 ---
 
@@ -51,9 +73,9 @@
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| Required tests run | [✅ / ⚠️ / ❌] | [notes] |
-| Tests pass | [✅ / ⚠️ / ❌] | [notes] |
-| No missing test scenarios | [✅ / ⚠️ / ❌] | [notes] |
+| Required tests run | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| Tests pass | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| Skip reason valid (if skipped) | `<✅ / ⚠️ / ❌ / N/A>` | `<NOTES>` |
 
 ---
 
@@ -61,54 +83,64 @@
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| No secrets committed | [✅ / ⚠️ / ❌] | [notes] |
-| `.env` untracked | [✅ / ⚠️ / ❌] | [notes] |
-| No unauthorized side effects | [✅ / ⚠️ / ❌] | [notes] |
-| Safety scans clean | [✅ / ⚠️ / ❌] | [notes] |
+| No secrets committed | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| `.env` untracked | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| No unauthorized side effects | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| Safety scans clean or explained | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| No real local paths in content | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+
+---
+
+## Overclaim Check
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| No evidence-free claims | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| No stale artifact status claims | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
+| Limitations stated honestly | `<✅ / ⚠️ / ❌>` | `<NOTES>` |
 
 ---
 
 ## Acceptance Criteria
 
 - [ ] Sprint goal met
-- [ ] Evidence quality is acceptable or better
+- [ ] Evidence quality is acceptable or better for all categories
 - [ ] Safety boundaries respected
-- [ ] Known limitations are documented
+- [ ] Known limitations documented
 - [ ] No overclaims detected
+- [ ] Product Owner approval scope respected
 
 ---
 
 ## Risks
 
-[List any risks identified during review.]
-
-- [risk 1]
-- [risk 2]
+- `<RISK_1>`
+- `<RISK_2>`
 
 ---
 
 ## Known Limitations
 
-[List known limitations acknowledged in this review.]
-
-- [limitation 1]
-- [limitation 2]
+- `<LIMITATION_1>`
+- `<LIMITATION_2>`
 
 ---
 
 ## Gate Outcome
 
-| Outcome | Details |
-|---------|---------|
-| **Decision** | [GREEN / YELLOW / RED] |
-| **Rationale** | [why this outcome] |
-| **Follow-up required** | [for yellow: what follow-up items] |
-| **Fixes required** | [for red: what must be fixed] |
+| Field | Value |
+|-------|-------|
+| **Decision** | `<GREEN / YELLOW / RED>` |
+| **Rationale** | `<WHY_THIS_OUTCOME>` |
+| **Follow-up required** | `<FOR_YELLOW_WHAT_ITEMS>` (or "N/A") |
+| **Fixes required** | `<FOR_RED_WHAT_MUST_BE_FIXED>` (or "N/A") |
 
 ---
 
 ## Next Sprint
 
-**Recommended next sprint:** [sprint name]
-**Next sprint goal:** [one-sentence goal]
-**Prerequisites:** [any prerequisites]
+| Field | Value |
+|-------|-------|
+| **Recommended next sprint** | `<SPRINT_NAME>` |
+| **Next sprint goal** | `<GOAL>` |
+| **Prerequisites** | `<PREREQUISITES>` |

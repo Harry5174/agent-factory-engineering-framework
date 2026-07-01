@@ -1,12 +1,20 @@
 # Sprint Prompt Template
 
-> **Instructions:** Copy this template and fill in the bracketed fields to create a sprint prompt for an IDE Agent or implementer.
+> **Purpose:** Define a complete, self-contained sprint for an IDE Agent or implementer — including all context, scope, safety, evidence, and handoff requirements.
+>
+> **When to use:** When the Implementation Supervisor prepares a sprint for execution. This is the primary input to an IDE Agent session.
+>
+> **Required inputs:** Approved sprint scope, repository state, safety boundaries, evidence requirements.
+>
+> **Required outputs:** All deliverables, plus a completion report with evidence.
+>
+> **Instructions:** Copy this template and replace all `<PLACEHOLDER>` fields with current values.
 
 ---
 
 ## Role
 
-You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
+You are the **`<ROLE>`** (e.g., IDE Agent) working in the `<WORKSPACE>` repository.
 
 ---
 
@@ -14,15 +22,29 @@ You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
 
 | Field | Value |
 |-------|-------|
-| **Artifact** | [e.g., Artifact 07 — GitHub Repo Steward Agent] |
-| **Sprint** | [e.g., A7.1 — Foundation Scaffold] |
-| **Sprint goal** | [one-sentence goal] |
+| **Project** | `<PROJECT_NAME>` |
+| **Artifact** | `<ARTIFACT_NAME>` (e.g., Artifact 07 — GitHub Repo Steward Agent) |
+| **Sprint** | `<SPRINT_NAME>` (e.g., A7.1 — Foundation Scaffold) |
+| **Sprint goal** | `<SPRINT_GOAL>` |
+
+---
+
+## Product Owner Approval
+
+| Field | Value |
+|-------|-------|
+| **Approval status** | `<APPROVAL_STATUS>` |
+| **Approved by** | `<APPROVED_BY>` |
+| **Approval scope** | `<APPROVAL_SCOPE>` |
+| **Approval limitations** | `<APPROVAL_LIMITATIONS>` |
 
 ---
 
 ## Context
 
-[Provide the context the implementer needs. Include relevant project state, previous sprint outcomes, and any bootstrap information.]
+> Provide the context the implementer needs. Include relevant project state, previous sprint outcomes, and bootstrap information.
+
+`<CONTEXT_BLOCK>`
 
 ---
 
@@ -30,18 +52,52 @@ You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
 
 ### In Scope
 
-- [deliverable 1]
-- [deliverable 2]
+- `<DELIVERABLE_1>`
+- `<DELIVERABLE_2>`
 
 ### Out of Scope
 
-- [excluded item 1]
-- [excluded item 2]
+- `<EXCLUDED_1>`
+- `<EXCLUDED_2>`
 
 ### Hard Constraints
 
-- [constraint 1, e.g., "No runtime code changes"]
-- [constraint 2, e.g., "No GitHub API calls"]
+- `<CONSTRAINT_1>` (e.g., "No runtime code changes")
+- `<CONSTRAINT_2>` (e.g., "No GitHub API calls")
+
+---
+
+## Anti-Drift Guard
+
+### What this session must NOT assume
+
+- `<ASSUMPTION_TO_AVOID_1>`
+- `<ASSUMPTION_TO_AVOID_2>`
+
+### What must be verified from the repository
+
+- Branch and commit match expected starting state
+- Required input files exist and are current
+
+### What decisions are already settled
+
+- `<SETTLED_DECISION_1>`
+
+### What decisions are still open
+
+- `<OPEN_DECISION_1>` (resolve during implementation or stop and escalate)
+
+### What would count as scope drift
+
+- Implementing features beyond the deliverables listed above
+- Modifying files outside the sprint's scope
+- Adding unapproved dependencies or infrastructure
+
+### When to stop and ask for clarification
+
+- Scope is ambiguous or contradictory
+- A required input is missing
+- A safety boundary would need to be relaxed
 
 ---
 
@@ -49,8 +105,8 @@ You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
 
 | # | Deliverable | Description |
 |---|-------------|-------------|
-| 1 | [deliverable name] | [what it is and what it contains] |
-| 2 | [deliverable name] | [what it is and what it contains] |
+| 1 | `<DELIVERABLE_NAME_1>` | `<WHAT_IT_IS_AND_CONTAINS>` |
+| 2 | `<DELIVERABLE_NAME_2>` | `<WHAT_IT_IS_AND_CONTAINS>` |
 
 ---
 
@@ -58,7 +114,31 @@ You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
 
 | Test | Command | Expected Result |
 |------|---------|-----------------|
-| [test name] | [command] | [expected outcome] |
+| `<TEST_NAME>` | `<COMMAND>` | `<EXPECTED_OUTCOME>` |
+
+For docs-only sprints, minimum validation:
+
+```bash
+git diff --check
+```
+
+---
+
+## Safety Invariants
+
+- Do not print secrets
+- Do not read or paste `.env`
+- Do not run live external side effects without explicit Product Owner approval
+- Use fake/default mode unless real mode is explicitly approved
+- Do not bypass approval gates
+- Do not let an LLM execute tools directly — LLM proposes; harness decides; operator approves
+- Record evidence before claiming completion
+
+### Inherited Safety Boundaries
+
+- Artifact 04: real GitHub runtime safety (server-side token, allowlisted repos)
+- Artifact 05: release-gate evidence safety (evidence required before claims)
+- Artifact 06: local/demo operator workbench safety (no live GitHub for demo)
 
 ---
 
@@ -67,21 +147,37 @@ You are the **[role, e.g., IDE Agent]** working in the `[workspace]` repository.
 Run after implementation:
 
 ```bash
-[validation command 1]
-[validation command 2]
-[safety scan command]
+git status -sb
+git diff --check
 ```
+
+Safety scans:
+
+```bash
+rg -n "ghp_|github_pat_|gho_|ghu_|ghs_|ghr_|Bearer |GITHUB_ACCESS_TOKEN=|AGENT_FACTORY_GITHUB_TOKEN=" \
+  <SCAN_PATH> || true
+
+rg -n "/home/|Desktop/|/Users/" \
+  <SCAN_PATH> || true
+
+git check-ignore -v .env || true
+git ls-files .env
+git ls-files "*__pycache__*"
+git ls-files "*.pyc"
+```
+
+> Matches that are intentional scan-pattern examples in documentation must be explained in the completion report.
 
 ---
 
 ## Commit Instructions
 
 ```text
-Branch: [branch name]
-Commit message: [message]
-Stage: [files/patterns to stage]
-Push: [yes/no]
-Tag: [yes/no]
+Branch: <BRANCH_NAME>
+Commit message: <COMMIT_MESSAGE>
+Stage: <STAGE_COMMAND>
+Push: no (unless Product Owner approves)
+Tag: no (unless Product Owner approves)
 ```
 
 ---
@@ -91,15 +187,19 @@ Tag: [yes/no]
 Return a completion report with:
 
 1. Sprint goal
-2. Branch and commit
-3. Files created
-4. Files modified
-5. Commands run
-6. Test/lint results
-7. Safety scan results
-8. Scope confirmations
-9. Known limitations
-10. Recommended next step
+2. Branch and commit (with base commit)
+3. Files reviewed before implementation
+4. Files created (with descriptions)
+5. Files modified (with descriptions)
+6. Commands run (with relevant output)
+7. Test/lint results (or documented reason for skipping)
+8. Secret scan results
+9. Local path scan results
+10. `.env` verification results
+11. Scope confirmations (what was NOT changed)
+12. Safety confirmations checklist
+13. Known limitations
+14. Recommended next step
 
 ---
 
@@ -107,5 +207,10 @@ Return a completion report with:
 
 Stop and report blocked if:
 
-- [block condition 1]
-- [block condition 2]
+- `<BLOCK_CONDITION_1>`
+- `<BLOCK_CONDITION_2>`
+- Scope expansion beyond approved boundaries is needed
+- Safety boundary exception is needed without Product Owner approval
+- Required files or state are missing from the repository
+- Secret scans reveal actual credentials
+- Local path scans reveal real machine-specific paths

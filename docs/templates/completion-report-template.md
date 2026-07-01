@@ -1,6 +1,14 @@
 # Completion Report Template
 
-> **Instructions:** Fill in this template at the end of a sprint to document what was done and provide evidence.
+> **Purpose:** Document what was done in a sprint with structured evidence so reviewers can evaluate claims, verify safety, and make gate decisions.
+>
+> **When to use:** At the end of every sprint, before requesting a green-gate review.
+>
+> **Required inputs:** All evidence collected during the sprint.
+>
+> **Required outputs:** A filled report that covers every evidence category below.
+>
+> **Instructions:** Replace all `<PLACEHOLDER>` fields with actual values and evidence.
 
 ---
 
@@ -8,36 +16,46 @@
 
 | Field | Value |
 |-------|-------|
-| **Artifact** | [e.g., Artifact 07 — GitHub Repo Steward Agent] |
-| **Sprint** | [e.g., A7.1 — Foundation Scaffold] |
-| **Sprint goal** | [one-sentence goal] |
-| **Date** | [date] |
-| **Author** | [who completed the sprint] |
+| **Project** | `<PROJECT_NAME>` |
+| **Artifact** | `<ARTIFACT_NAME>` |
+| **Sprint** | `<SPRINT_NAME>` |
+| **Sprint goal** | `<SPRINT_GOAL>` |
+| **Date** | `<DATE>` |
+| **Author** | `<AUTHOR>` |
+
+---
+
+## Product Owner Approval
+
+| Field | Value |
+|-------|-------|
+| **Approval status** | `<APPROVAL_STATUS>` |
+| **Approved by** | `<APPROVED_BY>` |
+| **Approval scope** | `<APPROVAL_SCOPE>` |
+| **Approval limitations** | `<APPROVAL_LIMITATIONS>` |
 
 ---
 
 ## Decision Summary
 
-[Summarize key decisions made during the sprint. Reference decision log entries if applicable.]
+`<DECISION_SUMMARY>`
 
 ---
 
 ## Branch and Commit
 
 ```text
-Branch: [branch name]
-Commit: [commit hash]
-Base: [base branch, e.g., main]
+Branch: <BRANCH_NAME>
+Commit: <COMMIT_HASH>
+Base: <BASE_COMMIT>
 ```
 
 ---
 
 ## Files Reviewed
 
-[List files that were reviewed/inspected before implementation.]
-
-- [file path 1]
-- [file path 2]
+- `<FILE_PATH_1>`
+- `<FILE_PATH_2>`
 
 ---
 
@@ -45,7 +63,7 @@ Base: [base branch, e.g., main]
 
 | File | Description |
 |------|-------------|
-| [file path] | [what this file is] |
+| `<FILE_PATH>` | `<DESCRIPTION>` |
 
 ---
 
@@ -53,15 +71,14 @@ Base: [base branch, e.g., main]
 
 | File | Change |
 |------|--------|
-| [file path] | [what changed and why] |
+| `<FILE_PATH>` | `<WHAT_CHANGED_AND_WHY>` |
 
 ---
 
 ## Commands Run
 
 ```bash
-[command 1 and relevant output]
-[command 2 and relevant output]
+<COMMAND_AND_OUTPUT>
 ```
 
 ---
@@ -71,18 +88,18 @@ Base: [base branch, e.g., main]
 ### Tests
 
 ```text
-[test output or summary]
+<TEST_OUTPUT_OR_SUMMARY>
 ```
 
 ### Lint
 
 ```text
-[lint output or summary]
+<LINT_OUTPUT_OR_SUMMARY>
 ```
 
 ### If Tests/Lint Were Skipped
 
-**Reason:** [why tests or lint were not run, e.g., "docs-only sprint with no code changes"]
+**Reason:** `<REASON>` (e.g., "docs-only sprint with no code changes")
 
 ---
 
@@ -91,19 +108,24 @@ Base: [base branch, e.g., main]
 ### Secret Scans
 
 ```text
-[output of token/credential scan]
+<TOKEN_SCAN_OUTPUT>
 ```
+
+> If matches appear, explain whether they are intentional scan-pattern examples or real credentials.
 
 ### Local Path Scans
 
 ```text
-[output of local path scan]
+<LOCAL_PATH_SCAN_OUTPUT>
 ```
+
+> If matches appear, explain whether they are scan-pattern examples or real paths.
 
 ### `.env` Verification
 
 ```text
-[output of git check-ignore and git ls-files for .env]
+<GIT_CHECK_IGNORE_OUTPUT>
+<GIT_LS_FILES_ENV_OUTPUT>
 ```
 
 ---
@@ -115,21 +137,30 @@ Base: [base branch, e.g., main]
 - [ ] No live GitHub execution occurred
 - [ ] No credentials were required or read
 - [ ] `.env` remained ignored/untracked
-- [ ] No real tokens or local paths in committed content
+- [ ] No real tokens in committed content
+- [ ] No real local paths in committed content
+- [ ] Product Owner approval scope was respected
+
+---
+
+## Scope Confirmations
+
+- `<SCOPE_CONFIRMATION_1>` (e.g., "No changes to Artifact 04/05/06 runtime code")
+- `<SCOPE_CONFIRMATION_2>` (e.g., "Artifact 07 was not created")
 
 ---
 
 ## Known Limitations
 
-[Honest description of what is not covered, not complete, or not ideal.]
-
-- [limitation 1]
-- [limitation 2]
+- `<LIMITATION_1>`
+- `<LIMITATION_2>`
 
 ---
 
 ## Recommended Next Step
 
-**Next sprint:** [e.g., A7.2 — Core Agent Implementation]
-**Next sprint goal:** [one-sentence goal]
-**Prerequisites:** [any prerequisites for the next sprint]
+| Field | Value |
+|-------|-------|
+| **Next sprint** | `<NEXT_SPRINT_NAME>` |
+| **Next sprint goal** | `<NEXT_SPRINT_GOAL>` |
+| **Prerequisites** | `<PREREQUISITES>` |

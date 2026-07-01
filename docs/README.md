@@ -27,8 +27,12 @@ This directory contains the specifications, protocols, templates, memory templat
 
 ## Templates
 
+See [Templates Index](templates/README.md) for the full lifecycle map and usage guide.
+
 | Template | Used By |
 |----------|---------|
+| [Templates Index](templates/README.md) | All roles — lifecycle map and usage guide |
+| [Template Quality Checklist](templates/template-quality-checklist.md) | All roles — validate templates before use |
 | [Design Supervisor Bootstrap](templates/design-supervisor-bootstrap-template.md) | Design Supervisor at session start |
 | [Implementation Supervisor Bootstrap](templates/implementation-supervisor-bootstrap-template.md) | Implementation Supervisor at sprint start |
 | [IDE Agent Bootstrap](templates/ide-agent-bootstrap-template.md) | IDE Agent at implementation start |
@@ -58,6 +62,7 @@ This directory contains the specifications, protocols, templates, memory templat
 |---------|-------|
 | [Agent Factory Project Bootstrap](examples/agent-factory-project-bootstrap-example.md) | How to bootstrap a Design Supervisor session |
 | [Artifact 06 Closeout Bootstrap](examples/artifact-06-closeout-bootstrap-example.md) | How to bootstrap a closeout verification session |
+| [Artifact 07 Readiness Draft](examples/artifact-07-bootstrap-readiness-draft.md) | Framework readiness for the next vertical agent |
 
 ---
 

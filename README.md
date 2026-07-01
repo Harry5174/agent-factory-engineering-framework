@@ -68,12 +68,14 @@ AFDF provides templates and protocols for each stage. Instead of recreating cont
 If you are starting a new session, read these first:
 
 1. **This README** — understand what AFDF is
-2. **[Session Lifecycle Protocol](docs/protocols/session-lifecycle.md)** — understand the full session flow
-3. **The appropriate bootstrap template** for your role:
+2. **[Templates Index](docs/templates/README.md)** — understand the template lifecycle and which template to use
+3. **[Session Lifecycle Protocol](docs/protocols/session-lifecycle.md)** — understand the full session flow
+4. **The appropriate bootstrap template** for your role:
    - Design Supervisor → [design-supervisor-bootstrap-template.md](docs/templates/design-supervisor-bootstrap-template.md)
    - Implementation Supervisor → [implementation-supervisor-bootstrap-template.md](docs/templates/implementation-supervisor-bootstrap-template.md)
    - IDE Agent → [ide-agent-bootstrap-template.md](docs/templates/ide-agent-bootstrap-template.md)
-4. **[Project Memory Template](docs/memory/project-memory-template.md)** — understand what living memory looks like
+5. **[Template Quality Checklist](docs/templates/template-quality-checklist.md)** — validate your filled template before use
+6. **[Project Memory Template](docs/memory/project-memory-template.md)** — understand what living memory looks like
 
 ---
 
@@ -114,8 +116,8 @@ See [Roadmap](docs/status/roadmap.md) for planned future sprints.
 
 | Sprint | Description | Status |
 |--------|-------------|--------|
-| AFDF.0 | Framework Scaffold and Operating Model | Current |
-| AFDF.1 | Core Bootstrap Templates Hardening | Planned |
+| AFDF.0 | Framework Scaffold and Operating Model | ✅ Complete |
+| AFDF.1 | Core Bootstrap Templates Hardening | ✅ Complete |
 | AFDF.2 | Project Memory, Decision Log, and Evidence Protocols | Planned |
 | AFDF.3 | Agent Factory Bootstrap Example | Planned |
 | AFDF.4 | Next-Session Prompt Generation Protocol | Planned |
@@ -139,6 +141,8 @@ development-framework/
     │   ├── safety-boundary-protocol.md
     │   └── green-gate-review-protocol.md
     ├── templates/
+    │   ├── README.md                  # Templates index and lifecycle map
+    │   ├── template-quality-checklist.md
     │   ├── design-supervisor-bootstrap-template.md
     │   ├── implementation-supervisor-bootstrap-template.md
     │   ├── ide-agent-bootstrap-template.md
@@ -155,7 +159,8 @@ development-framework/
     │   └── lessons-learned-template.md
     ├── examples/
     │   ├── agent-factory-project-bootstrap-example.md
-    │   └── artifact-06-closeout-bootstrap-example.md
+    │   ├── artifact-06-closeout-bootstrap-example.md
+    │   └── artifact-07-bootstrap-readiness-draft.md
     └── status/
         ├── project-status.md
         ├── roadmap.md
