@@ -22,6 +22,10 @@ This directory contains the specifications, protocols, templates, memory templat
 | [Evidence Review](protocols/evidence-review-protocol.md) | How to evaluate completion report evidence |
 | [Safety Boundary](protocols/safety-boundary-protocol.md) | Reusable safety rules and artifact boundaries |
 | [Green Gate Review](protocols/green-gate-review-protocol.md) | How to conduct green/yellow/red gate reviews |
+| [Memory Update](protocols/memory-update-protocol.md) | When and how to update living memory |
+| [Decision Log](protocols/decision-log-protocol.md) | How to record decisions |
+| [Evidence Package](protocols/evidence-package-protocol.md) | How to structure evidence packages |
+| [Overclaim Prevention](protocols/overclaim-prevention-protocol.md) | How to prevent hallucinated completion states |
 
 ---
 

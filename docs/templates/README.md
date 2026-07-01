@@ -40,6 +40,12 @@ Next Session Handoff
 
 ---
 
+## Relationship to Living Memory
+
+These templates are designed to be filled using data from the [Living Project Memory](../../project-memory/). While templates provide the empty structure, the living memory provides the factual content (status, decisions, evidence). Every filled template must link back to the living memory to ensure context continuity.
+
+---
+
 ## How Templates Relate
 
 1. The **Design Supervisor Bootstrap** sets scope and decisions

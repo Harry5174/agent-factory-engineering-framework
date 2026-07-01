@@ -118,7 +118,7 @@ See [Roadmap](docs/status/roadmap.md) for planned future sprints.
 |--------|-------------|--------|
 | AFDF.0 | Framework Scaffold and Operating Model | ✅ Complete |
 | AFDF.1 | Core Bootstrap Templates Hardening | ✅ Complete |
-| AFDF.2 | Project Memory, Decision Log, and Evidence Protocols | Planned |
+| AFDF.2 | Project Memory, Decision Log, and Evidence Protocols | ✅ Complete |
 | AFDF.3 | Agent Factory Bootstrap Example | Planned |
 | AFDF.4 | Next-Session Prompt Generation Protocol | Planned |
 
@@ -139,7 +139,11 @@ development-framework/
     │   ├── repository-inspection-protocol.md
     │   ├── evidence-review-protocol.md
     │   ├── safety-boundary-protocol.md
-    │   └── green-gate-review-protocol.md
+    │   ├── green-gate-review-protocol.md
+    │   ├── memory-update-protocol.md
+    │   ├── decision-log-protocol.md
+    │   ├── evidence-package-protocol.md
+    │   └── overclaim-prevention-protocol.md
     ├── templates/
     │   ├── README.md                  # Templates index and lifecycle map
     │   ├── template-quality-checklist.md
@@ -166,4 +170,20 @@ development-framework/
         ├── roadmap.md
         ├── known-limitations.md
         └── interview-notes.md
+    └── project-memory/
+        ├── README.md                  # Project memory index
+        └── agent-factory/
+            ├── README.md
+            ├── project-memory.md
+            ├── phase-map.md
+            ├── artifact-map.md
+            ├── decision-log.md
+            ├── open-decisions.md
+            ├── rejected-ideas.md
+            ├── known-limitations-register.md
+            ├── technical-debt-register.md
+            ├── lessons-learned.md
+            ├── safety-invariants.md
+            ├── evidence-index.md
+            └── next-artifact-readiness.md
 ```
