@@ -28,6 +28,8 @@ Next Session Handoff
 
 ## Template Summary
 
+*Note: AFDF.1R repaired empty core template files found after AFDF.1/AFDF.2 merge.*
+
 | Template | Role | When Used | Inputs | Output |
 |----------|------|-----------|--------|--------|
 | [Design Supervisor Bootstrap](design-supervisor-bootstrap-template.md) | Design Supervisor | Start of a design session | Project memory, completion reports, repo state | Scope decisions, gate decisions, updated memory |
@@ -60,7 +62,7 @@ These templates are designed to be filled using data from the [Living Project Me
 
 ## Minimum Required Fields
 
-Any template derivative or customized prompt must include at minimum:
+A valid template must be non-empty and include at minimum:
 
 | Field | Reason |
 |-------|--------|
