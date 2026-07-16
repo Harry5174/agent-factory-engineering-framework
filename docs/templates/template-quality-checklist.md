@@ -1,5 +1,7 @@
 # Template Quality Checklist
 
+> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+
 Use this checklist to evaluate whether a prompt, bootstrap, or template is ready for use. A template that fails multiple checks is likely to cause drift, overclaims, or safety issues.
 
 ---
@@ -78,7 +80,7 @@ Use this checklist to evaluate whether a prompt, bootstrap, or template is ready
 
 - [ ] No real tokens, API keys, or credentials appear in the template
 - [ ] No real `.env` values are included
-- [ ] Scan patterns use token-type prefixes only (e.g., `ghp_`), not real values
+- [ ] Scan patterns describe credential categories or assignments, not real values
 
 ## No Local Absolute Paths
 

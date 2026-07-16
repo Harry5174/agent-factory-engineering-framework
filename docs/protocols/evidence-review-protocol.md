@@ -96,4 +96,4 @@ After evaluation, the reviewer provides:
 3. **Recommended corrections** (if any)
 4. **Gate recommendation** (green / yellow / red)
 
-This feeds into the [Green Gate Review Protocol](green-gate-review-protocol.md).
+This recommendation feeds into the [Green Gate Review Protocol](green-gate-review-protocol.md). It does not authorize implementation, publication, or release and does not replace the Design Supervisor's final sprint-gate responsibility.

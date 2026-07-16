@@ -1,6 +1,6 @@
 # Green Gate Review Protocol
 
-How Design Supervisors and Reviewers conduct gate reviews at the end of a sprint.
+How evidence review feeds the Design Supervisor's final gate decision at the end of a sprint.
 
 ---
 
@@ -8,8 +8,8 @@ How Design Supervisors and Reviewers conduct gate reviews at the end of a sprint
 
 | Gate | Meaning | Next Action |
 |------|---------|-------------|
-| **Green** | Accepted. All criteria met. | Next sprint may begin. Update project memory. |
-| **Yellow** | Accepted with minor follow-up. | Next sprint may begin carefully. Follow-up items must be tracked. |
+| **Green** | Accepted. All criteria met. | Record the decision; later work still requires explicit authorization. |
+| **Yellow** | Accepted with minor follow-up. | Track conditions; later work still requires explicit authorization. |
 | **Red** | Blocked or rejected. | Fix required before next sprint. Do not proceed. |
 
 ---
@@ -78,7 +78,9 @@ Use the [Evidence Review Protocol](evidence-review-protocol.md) to evaluate:
 
 ---
 
-## 5. Gate Report
+## 5. Gate Report and Authority
+
+The Implementation Supervisor or Independent Reviewer may provide an evidence recommendation. The Design Supervisor issues the final sprint gate. Product Owner authority is still required for publication, tags, releases, and each later implementation sprint.
 
 Fill in the [Green Gate Review Template](../templates/green-gate-review-template.md) with:
 
@@ -96,6 +98,6 @@ Fill in the [Green Gate Review Template](../templates/green-gate-review-template
 
 | Gate | Actions |
 |------|---------|
-| **Green** | Update project memory. Prepare next-session handoff. Merge/tag if Product Owner approves. |
-| **Yellow** | Update project memory. Track follow-up items. Prepare next-session handoff with caveats. |
-| **Red** | Document required fixes. Do not update project memory. Do not merge. Re-sprint or fix before retrying gate. |
+| **Green** | Update authorized adopter-owned `.afef/` records and prepare a handoff. Do not publish or start later work without authorization. |
+| **Yellow** | Track conditions in authorized adopter-owned `.afef/` records and prepare a qualified handoff. |
+| **Red** | Document required fixes. Do not claim completion or begin later work. |

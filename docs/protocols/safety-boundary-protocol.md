@@ -12,13 +12,13 @@ These rules apply to every session, sprint, and artifact:
 |------|-------------|
 | **Do not print secrets** | Never print, log, or expose tokens, API keys, passwords, or credentials |
 | **Do not read `.env` unless explicitly approved** | `.env` files may contain credentials; do not read them without Product Owner approval |
-| **Do not paste tokens into LLM contexts** | Never paste tokens, keys, or credentials into ChatGPT, Claude, or other LLM interfaces |
+| **Do not paste tokens into model contexts** | Never paste tokens, keys, or credentials into any model or agent interface |
 | **Do not run live external side effects without explicit approval** | Any operation that writes to an external service requires explicit Product Owner approval |
 | **Fake/default first** | All new functionality defaults to fake/mock execution; real execution is opt-in |
 | **Real mode explicit only** | Real execution requires explicit configuration, not accidental enablement |
 | **CI must not run live side effects** | CI/CD pipelines must use fake/mock clients only |
 | **Approval before side effects** | Every side effect must pass through an approval gate before execution |
-| **LLM proposes, harness decides, operator approves** | The model proposes actions; the harness validates them; the operator makes the final decision |
+| **Proposals do not grant authority** | Generated proposals remain non-executable until the adopting project's authorized controls permit a bounded action |
 
 ---
 
@@ -29,7 +29,7 @@ At the start of every session:
 1. Verify `.env` is gitignored (`git check-ignore -v .env || true`)
 2. Verify `.env` is not tracked (`git ls-files .env`)
 3. Run token scans against new content before committing
-4. Do not require GitHub credentials unless the sprint explicitly involves real GitHub execution
+4. Do not require external-service credentials unless the sprint explicitly authorizes that service and operation
 5. Do not push or tag without Product Owner approval
 
 ---
@@ -44,54 +44,30 @@ Every sprint prompt must include:
 
 ---
 
-## 4. Artifact-Specific Safety Boundaries
+## 4. Reusable Safety Boundaries
 
-Each artifact adds specific safety rules that subsequent artifacts inherit:
+### Proposal and Validation Boundary
 
-### Artifact 00–01 — Foundation and Skill Runner
+- Generated proposals do not grant execution authority.
+- Arguments and target scope are validated before execution.
+- Unsafe or ambiguous requests fail closed.
 
-- Identity is server-derived, never client-claimed
-- Proposals are validated before execution
-- Unsafe arguments are rejected
+### External-Read Boundary
 
-### Artifact 02 — Approval-Gated GitHub Tool Harness
+- External reads are explicit and limited to approved resources.
+- Read results are treated as untrusted input and recorded when they affect decisions.
 
-- Side effects require explicit approval
-- In-memory idempotency ledger prevents duplicate execution
-- Fake-client execution is the default
+### External-Write Boundary
 
-### Artifact 03 — Durable Side-Effect Ledger
+- External writes require specific Product Owner authorization.
+- Target allowlists, approval binding, idempotency, and audit requirements belong to the adopting project's approved design.
+- Local or fake-mode evidence does not establish live-write readiness.
 
-- SQLite-backed persistence for side-effect records
-- Restart/replay duplicate suppression
-- Durable approval bindings
+### Release Boundary
 
-### Artifact 04 — Real GitHub Comment Adapter
-
-- Real execution is explicitly configured, not default
-- Repository allowlisting limits which repos can be targeted
-- Server-side token loading (tokens are never client-supplied)
-- Remote idempotency marker lookup and reconciliation
-- Durable audit recording for all execution attempts
-
-### Artifact 05 — Real-Mode Smoke Evidence and Release Gate
-
-- Evidence artifact only — does not own runtime
-- Release gate requires documented evidence
-- Offline replay and no-duplicate proofs
-- Negative/zero-network proof for CI safety
-
-### Artifact 06 — Operator Approval Console / Workbench
-
-- Local/demo execution boundary
-- Operator inspects risk, scopes, context, and execution mode before decision
-- Server-controlled approval routes (not client-bypass)
-- No live GitHub execution, no `.env`, no OAuth required for demo
-
-### Artifact 07 (Future) — Vertical Agent Boundary
-
-- Will inherit all prior safety boundaries
-- Specific safety rules to be defined in Artifact 07 design
+- Release review requires complete, independently verifiable evidence.
+- A review recommendation does not publish, tag, or release.
+- CI and unattended automation must not perform live side effects unless separately designed and authorized.
 
 ---
 
@@ -101,7 +77,7 @@ Every completion report must include:
 
 - [ ] Confirmation no runtime behavior was changed (if docs-only sprint)
 - [ ] Confirmation no artifact code was modified (if docs-only sprint)
-- [ ] Confirmation no live GitHub execution occurred (unless explicitly approved)
+- [ ] Confirmation no live external-service execution occurred (unless explicitly approved)
 - [ ] Confirmation no credentials were required or read
 - [ ] Confirmation `.env` remained ignored/untracked
 - [ ] Token/local path scan results for new content

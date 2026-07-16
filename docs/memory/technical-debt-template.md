@@ -1,5 +1,7 @@
 # Technical Debt Template
 
+> **AFEF memory-template status:** Target version `0.1.0` is unreleased. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+
 > **Instructions:** Record technical debt items as they are identified. Prioritize by risk and urgency. Update when items are resolved.
 
 ---

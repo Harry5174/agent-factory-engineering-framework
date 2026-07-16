@@ -5,11 +5,11 @@
 ---
 
 ## When Memory is Updated
-Memory must be updated at the end of every sprint, **after** a completion report has been submitted and reviewed.
+Operational memory may be updated only after a completion report has been submitted and reviewed and when that update is explicitly authorized. AFEF source templates remain unchanged by adopter operations.
 
 ## Who Updates It
-- The **Design Supervisor** or **Product Owner** updates memory during a green-gate review.
-- Or, the **IDE Agent** updates memory as the final step of a green-gated sprint, under explicit instruction from the Implementation Supervisor.
+- The adopting repository defines who maintains its `.afef/` records.
+- An **IDE Agent** may update those records only when the sprint prompt explicitly authorizes it.
 
 ## Required Evidence
 Memory updates must be grounded in facts. 
@@ -17,24 +17,24 @@ Memory updates must be grounded in facts.
 - You cannot claim an artifact is "published" without evidence of a git tag and merge to main.
 
 ## Files to Touch After a GREEN Gate
-1. `project-memory.md` (Update current sprint/status).
-2. `decision-log.md` (Record any new decisions made during the sprint).
-3. `evidence-index.md` (Link to the new completion report and evidence artifacts).
-4. `artifact-map.md` (Update the status of the current artifact).
+1. `.afef/project-memory.md` (Update current sprint/status).
+2. `.afef/decision-log.md` (Record approved decisions).
+3. `.afef/evidence-index.md` (Link to completion evidence).
+4. Other adopter-owned `.afef/` records explicitly named by the sprint.
 
 ## Files to Touch After a YELLOW Gate
 1. `technical-debt-register.md` (Log the required follow-ups that caused the yellow gate).
 2. `known-limitations-register.md` (If the sprint succeeded but revealed a new limitation).
 
 ## What NOT to Update After a RED Gate
-- Do not update the `artifact-map.md` to "Complete".
-- Do not update `project-memory.md` to claim success.
+- Do not update a status record to "Complete".
+- Do not update `.afef/project-memory.md` to claim success.
 - The sprint must be retried or rescoped.
 
 ## Handling Unknowns
-If a status is unknown (e.g., "Did the operator tag this release?"), mark it explicitly as **"Unknown — requires verification"**. Do not assume success.
+If a status is unknown (e.g., "Did the authorized publisher tag this release?"), mark it explicitly as **"Unknown — requires verification"**. Do not assume success.
 
 ## Avoiding Stale Claims
 Do not make forward-looking claims in memory. 
-- **Incorrect:** "Artifact 07 is built and uses a fake LLM." (If A7 hasn't started).
-- **Correct:** "Artifact 07 is planned to use a fake LLM."
+- **Incorrect:** "The capability is complete." (When only design evidence exists.)
+- **Correct:** "The capability is planned; implementation evidence does not yet exist."

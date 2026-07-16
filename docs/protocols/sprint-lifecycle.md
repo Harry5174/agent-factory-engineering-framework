@@ -10,7 +10,7 @@ Every sprint has:
 
 | Field | Description |
 |-------|-------------|
-| **Sprint name** | e.g., `AFDF.0`, `A7.1` |
+| **Sprint name** | e.g., `PROJECT-1.1` |
 | **Sprint goal** | One-sentence description of what this sprint achieves |
 | **Parent artifact** | The artifact this sprint belongs to |
 | **Scope boundaries** | What is in scope and what is explicitly out of scope |
@@ -37,8 +37,8 @@ Before implementation begins:
 
 The **Product Owner** approves the sprint scope before implementation begins.
 
-- For docs-only sprints, approval may be implicit
-- For runtime changes, approval must be explicit
+- Every implementation sprint requires explicit authorization.
+- External side effects, publication, tags, and releases require separate authorization.
 - For live side effects, approval must be explicit and recorded
 
 ---
@@ -83,12 +83,12 @@ Fill in the [Completion Report Template](../templates/completion-report-template
 
 ## 7. Green/Yellow/Red Gate
 
-The **Design Supervisor** or **Reviewer** evaluates the completion report:
+The **Implementation Supervisor** or an Independent Reviewer evaluates evidence and recommends an outcome. The **Design Supervisor** issues the final sprint gate:
 
 | Gate | Meaning |
 |------|---------|
-| **Green** | Accepted. Next sprint may begin. |
-| **Yellow** | Accepted with minor follow-up. Next sprint may begin carefully. |
+| **Green** | Accepted. Later work still requires explicit authorization. |
+| **Yellow** | Accepted with tracked conditions. Later work still requires explicit authorization. |
 | **Red** | Blocked or rejected. Fix required before next sprint. |
 
 ### Gate Criteria

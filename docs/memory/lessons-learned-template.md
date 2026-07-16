@@ -1,5 +1,7 @@
 # Lessons Learned Template
 
+> **AFEF memory-template status:** Target version `0.1.0` is unreleased. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+
 > **Instructions:** Record lessons learned during sprints and sessions. These help future work avoid repeated mistakes and leverage proven approaches.
 
 ---
@@ -11,7 +13,7 @@
 | Field | Value |
 |-------|-------|
 | **Lesson** | [What was learned?] |
-| **Where learned** | [Which artifact, sprint, or session?] |
+| **Where learned** | [Which work item, sprint, or session?] |
 | **Why it matters** | [Why should future sessions care about this?] |
 | **How to apply later** | [Concrete guidance for future work] |
 
@@ -22,7 +24,7 @@
 | Field | Value |
 |-------|-------|
 | **Lesson** | [What was learned?] |
-| **Where learned** | [Which artifact, sprint, or session?] |
+| **Where learned** | [Which work item, sprint, or session?] |
 | **Why it matters** | [Why should future sessions care about this?] |
 | **How to apply later** | [Concrete guidance for future work] |
 

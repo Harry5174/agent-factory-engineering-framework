@@ -1,60 +1,67 @@
-# Universal Session Bootstrap
+# AFEF Session Bootstrap
 
-**Purpose:** A universal entry point for any stateless Design Supervisor, Implementation Supervisor, IDE Agent, or Reviewer/Evaluator session.
+**Framework target:** `0.1.0`
+**Release status:** Unreleased
 
-## Who Should Use It
-Any LLM-based agent assuming a role within the Agent Factory Development Framework (AFDF).
+## Purpose
 
-## Startup Sequence
-1. Understand your role (Design, Implement, Execute, Review).
-2. Do not assume prior chat memory exists. You are stateless.
-3. Locate the `bootstrap-packages/` directory for your target artifact.
-4. Read this `session-bootstrap.md` completely.
-5. Follow the `context-load-order.md` for your specific artifact.
-6. Run the repository inspection commands to verify the physical repository state.
-7. Return your first response strictly matching the role's expected kickoff output.
+Provide a verification-first entry point for any Product Owner, Design Supervisor, Implementation Supervisor, IDE Agent, or Independent Reviewer using the Agent Factory Engineering Framework (AFEF).
 
-## Required Context Loading Order
-Your kickoff prompt will provide a `context-load-order.md`. Follow it explicitly to load framework documentation, project memory, and artifact context before making any decisions.
+## Required Start
 
-## Repository Inspection Sequence
-**Inspect first, then trust.**
-Always run the `pre-design-repository-inspection.md` or equivalent inspection script provided in your kickoff package. The file system is the ultimate source of truth. 
+1. Identify the repository and session role.
+2. Verify repository root, current branch, HEAD, working tree, remotes, and tags.
+3. Load the explicitly authorized sprint or review prompt.
+4. Load relevant AFEF specifications, protocols, and templates.
+5. Load adopter-owned `.afef/` records only after comparing them with repository evidence.
+6. State scope, prohibited work, required evidence, and stop conditions before changing state.
 
-## Reconciling Memory vs Repository State
-If `project-memory` claims a feature is complete, but the repository code or git history contradicts this claim, the repository state wins. Update the project memory to reflect reality (via the Memory Update Protocol) or halt and escalate to the Product Owner.
+Repository evidence wins when an operational record is stale or contradictory. Correcting `.afef/` is itself a repository change and requires authorization.
 
-## Missing or Empty Files
-If a required context file or template is missing or completely empty:
-- Do not hallucinate its contents.
-- Halt the session.
-- Request clarification or a repair sprint (e.g., AFDF.1R) from the Product Owner.
+## Minimum Repository Checks
 
-## What Not to Assume
-- Do not assume you are in the correct git branch; always verify.
-- Do not assume tests pass just because code was written; always run them.
-- Do not assume side effects are safe to run; always check safety invariants.
-- Do not assume undocumented integrations exist.
+```bash
+git rev-parse --show-toplevel
+git branch --show-current
+git status -sb
+git status --short
+git rev-parse HEAD
+git remote -v
+git tag --list
+git diff --check
+```
 
-## Safety Invariants
-- Do not print secrets.
-- Do not read or paste `.env`.
-- Do not run live external side effects without explicit Product Owner approval.
-- Use fake/default mode unless real mode is explicitly approved.
-- Do not bypass approval gates.
-- Do not let an LLM execute tools directly.
-- LLM proposes; harness decides; operator approves.
-- Record evidence before claiming completion.
-- Do not overclaim mocked, fake/default, local demo, unpublished, or untagged work as production-ready.
+Do not read `.env` contents. Confirm only whether environment files are ignored or tracked when that check is relevant.
 
-## When to Stop and Ask for Clarification
-- When repository state fundamentally conflicts with loaded context.
-- When you encounter a missing, blocked, or unspecified dependency.
-- When an action would violate a safety invariant.
+## Role Boundaries
 
-## Role-Specific Templates
-This file does not replace role-specific templates. Once you have bootstrapped, proceed to your specific template:
+- Product Owner decisions define authorization; they do not substitute for evidence.
+- Design Supervisors define architecture and issue final sprint gates.
+- Implementation Supervisors translate approved scope and review evidence.
+- IDE Agents implement bounded work and return raw evidence without self-approval.
+- Independent Reviewers assess release readiness without modifying or publishing the candidate.
+
+## Stop Conditions
+
+Stop and report when:
+
+- Repository state conflicts with the required starting state.
+- Explicit sprint authorization is missing or ambiguous.
+- Required context is missing, empty, or contradicted by repository evidence.
+- Sensitive material may be exposed.
+- An external write, publication, tag, or release lacks separate authorization.
+- Completion would require scope expansion or redesign.
+- Required evidence cannot be produced.
+
+## Framework and Operational Records
+
+AFEF owns the source templates under `docs/memory/`. Adopting repositories instantiate and maintain operational records under `.afef/`; this framework repository does not contain an adopter's live project memory.
+
+## Role Templates
+
 - [Design Supervisor Bootstrap](docs/templates/design-supervisor-bootstrap-template.md)
 - [Implementation Supervisor Bootstrap](docs/templates/implementation-supervisor-bootstrap-template.md)
 - [IDE Agent Bootstrap](docs/templates/ide-agent-bootstrap-template.md)
 - [Green Gate Review](docs/templates/green-gate-review-template.md)
+
+Using a template does not authorize implementation, publication, or release. This AFEF baseline remains unreleased.

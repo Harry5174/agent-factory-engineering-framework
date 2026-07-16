@@ -43,7 +43,7 @@ find . -maxdepth 3 -type f | sort | sed -n '1,200p'
 Scan for tokens, secrets, and sensitive patterns:
 
 ```bash
-rg -n "TODO|FIXME|token|Authorization|Bearer|GITHUB_ACCESS_TOKEN|AGENT_FACTORY_GITHUB_TOKEN" . || true
+rg -n "TODO|FIXME|token|Authorization|Bearer|ACCESS_TOKEN|API_KEY|PASSWORD" . || true
 ```
 
 **What to check:**
@@ -100,10 +100,10 @@ git diff --check
 After creating new files, scan them for accidental secret or local path leaks:
 
 ```bash
-rg -n "ghp_|github_pat_|gho_|ghu_|ghs_|ghr_|Bearer |GITHUB_ACCESS_TOKEN=|AGENT_FACTORY_GITHUB_TOKEN=" \
+rg -n "Authorization:|Bearer |ACCESS_TOKEN=|API_KEY=|PASSWORD=" \
   <path-to-new-content> || true
 
-rg -n "/home/|Desktop/|/Users/" \
+rg -n "/home/|/Users/|[A-Za-z]:\\\\Users\\\\" \
   <path-to-new-content> || true
 ```
 

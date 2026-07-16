@@ -1,5 +1,7 @@
 # Next Session Handoff Template
 
+> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+
 ## Purpose
 To explicitly pass context from a completed sprint to the next IDE agent session, preserving project state and ensuring continuity without drift.
 
@@ -14,18 +16,17 @@ Use this template at the end of a sprint (often after a Green Gate Review) to se
 A Next Session Handoff document.
 
 ## Required Context Sources
-- `03-agent-factory/development-framework/README.md`
-- `03-agent-factory/development-framework/docs/README.md`
-- `03-agent-factory/development-framework/project-memory/README.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/README.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/project-memory.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/phase-map.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/artifact-map.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/decision-log.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/open-decisions.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/safety-invariants.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/evidence-index.md`
-- `03-agent-factory/development-framework/project-memory/agent-factory/next-artifact-readiness.md`
+- `README.md`
+- `docs/README.md`
+- `.afef/README.md`
+- `.afef/project-memory.md`
+- `.afef/phase-map.md`
+- `.afef/artifact-map.md`
+- `.afef/decision-log.md`
+- `.afef/open-decisions.md`
+- `.afef/safety-invariants.md`
+- `.afef/evidence-index.md`
+- `.afef/next-artifact-readiness.md`
 - `docs/protocols/memory-update-protocol.md`
 
 ## Repository Inspection Requirements
@@ -43,12 +44,12 @@ git ls-files .env
 git ls-files "*__pycache__*"
 git ls-files "*.pyc"
 ```
-For AFDF/framework docs-only sprints, also run:
+For AFEF documentation-only sprints, also run:
 ```bash
-find 03-agent-factory/development-framework -maxdepth 6 -type f | sort
-wc -l 03-agent-factory/development-framework/docs/templates/*-template.md
-rg -n "ghp_|github_pat_|gho_|ghu_|ghs_|ghr_|Bearer |GITHUB_ACCESS_TOKEN=|AGENT_FACTORY_GITHUB_TOKEN=" 03-agent-factory/development-framework || true
-rg -n "/home/harry|/home/|Desktop/prcx|xx_github|/Users/" 03-agent-factory/development-framework || true
+find . -path ./.git -prune -o -type f -print | sort
+wc -l docs/templates/*-template.md
+rg -n "Authorization:|Bearer |ACCESS_TOKEN=|API_KEY=|PASSWORD=" . || true
+rg -n '/home/|/Users/|[A-Za-z]:\\Users\\' . || true
 ```
 *(Intentional scan-pattern examples in documentation are acceptable but must be explained.)*
 
@@ -90,17 +91,16 @@ Stop and ask for clarification when:
 - Do not run live external side effects without explicit Product Owner approval.
 - Use fake/default mode unless real mode is explicitly approved.
 - Do not bypass approval gates.
-- Do not let an LLM execute tools directly.
-- LLM proposes; harness decides; operator approves.
+- Generated output does not grant execution authority.
+- Generated proposals do not grant execution authority; only the adopting project's authorized controls may permit side effects.
 - Record evidence before claiming completion.
 - Do not overclaim mocked, fake/default, local demo, unpublished, or untagged work as production-ready.
 
-Inherited safety boundaries:
-- Artifact 04: real GitHub runtime safety boundary.
-- Artifact 05: release-gate evidence boundary.
-- Artifact 06: local/demo operator workbench boundary.
-- AFDF: workflow memory/protocol boundary.
-- Artifact 07 future: vertical-agent proposal boundary.
+Inherited project safety boundaries:
+- <PROJECT_SAFETY_BOUNDARY_1>
+- <PROJECT_SAFETY_BOUNDARY_2>
+
+Only boundaries verified from the adopting repository and its authorized `.afef/` records apply.
 
 ## Scope Boundaries
 - Project: <PROJECT_NAME> (<PROJECT_SLUG>)

@@ -10,11 +10,11 @@ Every session — design, implementation, or review — follows this lifecycle. 
 
 **Steps:**
 
-1. Identify the session role (Design Supervisor, Implementation Supervisor, IDE Agent, Reviewer)
+1. Identify the session role (Product Owner, Design Supervisor, Implementation Supervisor, IDE Agent, or Independent Reviewer)
 2. Select the appropriate bootstrap template from `docs/templates/`
 3. Fill in the bootstrap with current project state from:
-   - Latest `docs/memory/project-memory-template.md` (or the active project memory instance)
-   - Latest `docs/status/project-status.md`
+   - Relevant AFEF source templates
+   - Latest authorized adopter-owned `.afef/` records
    - Latest completion report from the previous sprint
    - Latest next-session handoff document
 4. Include the bootstrap as the opening context for the session
@@ -105,13 +105,14 @@ Every session — design, implementation, or review — follows this lifecycle. 
 
 ## 8. Green-Gate Review
 
-**Purpose:** A Design Supervisor or Reviewer evaluates the completion report.
+**Purpose:** Evidence reviewers assess the completion report and the Design Supervisor issues the final sprint gate.
 
 **Steps:**
 
 1. Review the completion report using the [Green Gate Review Protocol](green-gate-review-protocol.md)
 2. Evaluate evidence quality using the [Evidence Review Protocol](evidence-review-protocol.md)
-3. Issue a green/yellow/red gate outcome
+3. Record the evidence recommendation
+4. Have the Design Supervisor issue the final sprint gate
 
 ---
 

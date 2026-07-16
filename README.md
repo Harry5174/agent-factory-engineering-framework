@@ -1,189 +1,90 @@
-# Agent Factory Development Framework (AFDF)
+# Agent Factory Engineering Framework (AFEF)
 
-The Agent Factory Development Framework is a reusable, living Markdown framework that supports the design, implementation, review, and handoff of all future Agent Factory artifacts.
+**Repository:** `agent-factory-engineering-framework`
 
----
+**Target version:** `0.1.0`
+**Release status: Unreleased**
 
-## What AFDF Is
+The Agent Factory Engineering Framework (AFEF) is a documentation-first development and engineering-governance framework for planning, implementing, reviewing, and handing off bounded work. It provides human-operated specifications, protocols, templates, and memory templates.
 
-AFDF is a lightweight process infrastructure layer for the Agent Factory project. It provides:
+AFEF is not an agent runtime, product runtime, workflow engine, CLI, validator, or automated policy-enforcement system. It does not execute tools or replace human review.
 
-- **Bootstrap templates** that give new sessions the context they need to start without recreating knowledge from scratch
-- **Sprint and session lifecycle protocols** that define how work flows from design through green-gate review
-- **Memory templates** that preserve decisions, lessons, rejected ideas, and technical debt across sessions
-- **Evidence and review protocols** that define how completion reports are evaluated
-- **Safety boundary protocols** that carry forward the Agent Factory's core safety invariants
-- **Role definitions** that clarify who does what in the design–implement–review cycle
+## Repository Status
 
----
+This repository is intended to become the canonical home of AFEF only after a separate publication and release gate. The local history in this candidate has not been published, tagged, or released, and the empty public namespace is not yet the canonical source of truth.
 
-## What AFDF Is Not
+Target version `0.1.0` identifies the baseline being prepared. It is not evidence of a Git tag, GitHub release, public repository initialization, adopter approval, or production maturity.
 
-- AFDF **does not run agents**. It is advisory and process-level only.
-- AFDF **does not enforce workflow automatically**. There is no CLI, database, or automation engine.
-- AFDF **does not modify artifact runtime behavior**. Artifacts 00–06 are unchanged.
-- AFDF **does not replace human review**. A Design Supervisor or Product Owner still makes decisions.
-- AFDF **does not generate prompts programmatically**. Templates are filled in manually.
+## Historical Provenance
 
----
+The first five commits were selectively extracted from the historical Agent Factory Development Framework (AFDF) directory in `learn-agentic-ai`. Their rewritten hashes preserve selected content provenance while excluding project memory, status documents, examples, and evidence packages. The later canonicalization commit establishes active AFEF identity and is deliberately distinguishable from those historical extraction commits.
 
-## Where It Lives
+See [AFDF extraction provenance](docs/provenance/afdf-extraction.md) for the source pin, extraction boundary, commit mapping, and rewrite limitations.
 
-```text
-03-agent-factory/development-framework/
-```
+## Operating Model
 
-This directory lives alongside the coursework folders and `xx-projects/`. It is not a numbered artifact — it is shared infrastructure that all future artifacts consume.
+AFEF separates reusable framework guidance from adopter-owned operational state:
 
----
+- This repository owns specifications, protocols, templates, memory templates, governance, and provenance.
+- An adopting repository owns its instantiated operational records under `.afef/`.
+- An adopter must verify its repository state before relying on `.afef/` records.
+- Every implementation sprint requires explicit authorization and bounded evidence.
+- Publication, tags, and releases require separate authorization.
 
-## How It Supports Future Artifacts
+GitHub Steward is a possible future adopter. It is not an AFEF runtime dependency, is not initialized by this baseline, and has not adopted AFEF.
 
-Every future artifact follows a reusable lifecycle:
+## Roles
 
-```text
-design session → sprint prompt → IDE/implementation session → completion report → green-gate review → living memory update → next-session bootstrap
-```
+| Role | Responsibility |
+|---|---|
+| Product Owner | Owns scope, policy, licensing, adoption, publication, tag, and release decisions. |
+| Design Supervisor | Owns architecture, sprint boundaries, and final sprint-gate decisions. |
+| Implementation Supervisor | Translates approved scope into executable prompts and reviews implementation evidence. |
+| IDE Agent | Performs explicitly authorized bounded changes and returns raw evidence without self-approval. |
+| Independent Reviewer | Independently evaluates release readiness; review does not itself publish or release. |
 
-AFDF provides templates and protocols for each stage. Instead of recreating context from scratch, new sessions start from a bootstrap document that carries forward project state, approved decisions, and safety invariants.
+See [Governance](GOVERNANCE.md) for the authority boundaries.
 
-**Core principle:** Context changes. Workflow does not.
+## Documentation Map
 
----
+- [Documentation index](docs/README.md)
+- [Active AFEF specification](docs/specs/agent-factory-engineering-framework.md)
+- [Protocols](docs/protocols/)
+- [Templates](docs/templates/README.md)
+- [Memory templates](docs/memory/project-memory-template.md)
+- [Session bootstrap](session-bootstrap.md)
+- [Governance](GOVERNANCE.md)
+- [Extraction provenance](docs/provenance/afdf-extraction.md)
+- [License](LICENSE)
+- [Version declaration](VERSION)
 
-## Who Uses It
+## Starting a Session
 
-| Role | Uses AFDF For |
-|------|---------------|
-| **Product Owner** | Scope approval, publish/tag decisions, safety boundary review |
-| **Design Supervisor** | Design sessions, scope definition, green-gate reviews |
-| **Implementation Supervisor** | Sprint prompts, scope boundaries, completion report requirements |
-| **IDE Agent** | Bootstrap context, allowed/forbidden edits, evidence collection |
-| **Reviewer/Evaluator** | Evidence review, overclaim detection, safety verification |
+1. Verify the repository path, branch, HEAD, remotes, tags, and working-tree state.
+2. Load the authorized sprint prompt and relevant AFEF protocols.
+3. Load adopter-owned `.afef/` records only after checking them against repository evidence.
+4. State scope, prohibited work, evidence requirements, and stop conditions before editing.
+5. Stop when authorization is missing or repository state contradicts the supplied context.
 
----
+Use [session-bootstrap.md](session-bootstrap.md) and the relevant role template for a structured start.
 
-## What Files Matter First
+## Completing a Sprint
 
-If you are starting a new session, read these first:
+1. Validate the implementation against the approved scope.
+2. Preserve raw command output and the complete intended diff outside the working tree when required.
+3. Produce a completion report with supported claims and explicit non-claims.
+4. Submit evidence for independent review without issuing a self-approval decision.
+5. Update adopter-owned `.afef/` records only when the sprint explicitly authorizes that update.
 
-1. **This README** — understand what AFDF is
-2. **[Templates Index](docs/templates/README.md)** — understand the template lifecycle and which template to use
-3. **[Session Lifecycle Protocol](docs/protocols/session-lifecycle.md)** — understand the full session flow
-4. **The appropriate bootstrap template** for your role:
-   - Design Supervisor → [design-supervisor-bootstrap-template.md](docs/templates/design-supervisor-bootstrap-template.md)
-   - Implementation Supervisor → [implementation-supervisor-bootstrap-template.md](docs/templates/implementation-supervisor-bootstrap-template.md)
-   - IDE Agent → [ide-agent-bootstrap-template.md](docs/templates/ide-agent-bootstrap-template.md)
-5. **[Template Quality Checklist](docs/templates/template-quality-checklist.md)** — validate your filled template before use
-6. **[Project Memory Template](docs/memory/project-memory-template.md)** — understand what living memory looks like
+## v0.1.0 Limitations
 
----
+- AFEF is documentation-first and manually operated.
+- It has no schemas, validators, CLI, CI integration, or reusable Actions.
+- It does not define a machine-readable governance contract.
+- It includes no adopter fixture and performs no automatic adoption.
+- Gate vocabulary and lifecycle automation remain candidates for a future, separately authorized version.
+- The target baseline is unreleased and has not passed an independent release gate.
 
-## How to Use AFDF at the Start of a Session
+## Claims Boundary
 
-1. Identify your role (Design Supervisor, Implementation Supervisor, IDE Agent, etc.)
-2. Copy the appropriate bootstrap template
-3. Fill in the current project state from the latest project memory and status docs
-4. Use the filled bootstrap as the opening context for the new session
-5. Verify the repository state using the [Repository Inspection Protocol](docs/protocols/repository-inspection-protocol.md)
-
----
-
-## How to Use AFDF at the End of a Sprint
-
-1. Fill in the [Completion Report Template](docs/templates/completion-report-template.md)
-2. Request a green-gate review using the [Green Gate Review Template](docs/templates/green-gate-review-template.md)
-3. If approved, update project memory using the [Project Memory Template](docs/memory/project-memory-template.md)
-4. Fill in the [Next Session Handoff Template](docs/templates/next-session-handoff-template.md)
-5. Commit, but do not push/tag without Product Owner approval
-
----
-
-## What AFDF Does Not Do Yet
-
-- No CLI or validation tooling
-- No automated schema enforcement
-- No multi-project synchronization
-- No prompt generation code
-- No database or persistence layer
-- Templates are manually filled, not auto-populated
-
-See [Roadmap](docs/status/roadmap.md) for planned future sprints.
-
----
-
-## Framework Version
-
-| Sprint | Description | Status |
-|--------|-------------|--------|
-| AFDF.0 | Framework Scaffold and Operating Model | ✅ Complete |
-| AFDF.1 | Core Bootstrap Templates Hardening | ✅ Complete |
-| AFDF.2 | Project Memory, Decision Log, and Evidence Protocols | ✅ Complete |
-| AFDF.3 | Agent Factory Bootstrap Example | Planned |
-| AFDF.4 | Next-Session Prompt Generation Protocol | Planned |
-
----
-
-## Directory Structure
-
-```text
-development-framework/
-├── README.md                          # This file
-└── docs/
-    ├── README.md                      # Docs index
-    ├── specs/
-    │   └── agent-factory-development-framework.md
-    ├── protocols/
-    │   ├── session-lifecycle.md
-    │   ├── sprint-lifecycle.md
-    │   ├── repository-inspection-protocol.md
-    │   ├── evidence-review-protocol.md
-    │   ├── safety-boundary-protocol.md
-    │   ├── green-gate-review-protocol.md
-    │   ├── memory-update-protocol.md
-    │   ├── decision-log-protocol.md
-    │   ├── evidence-package-protocol.md
-    │   └── overclaim-prevention-protocol.md
-    ├── templates/
-    │   ├── README.md                  # Templates index and lifecycle map
-    │   ├── template-quality-checklist.md
-    │   ├── design-supervisor-bootstrap-template.md
-    │   ├── implementation-supervisor-bootstrap-template.md
-    │   ├── ide-agent-bootstrap-template.md
-    │   ├── sprint-prompt-template.md
-    │   ├── completion-report-template.md
-    │   ├── green-gate-review-template.md
-    │   └── next-session-handoff-template.md
-    ├── memory/
-    │   ├── project-memory-template.md
-    │   ├── decision-log-template.md
-    │   ├── rejected-ideas-template.md
-    │   ├── known-limitations-template.md
-    │   ├── technical-debt-template.md
-    │   └── lessons-learned-template.md
-    ├── examples/
-    │   ├── agent-factory-project-bootstrap-example.md
-    │   ├── artifact-06-closeout-bootstrap-example.md
-    │   └── artifact-07-bootstrap-readiness-draft.md
-    └── status/
-        ├── project-status.md
-        ├── roadmap.md
-        ├── known-limitations.md
-        └── interview-notes.md
-    └── project-memory/
-        ├── README.md                  # Project memory index
-        └── agent-factory/
-            ├── README.md
-            ├── project-memory.md
-            ├── phase-map.md
-            ├── artifact-map.md
-            ├── decision-log.md
-            ├── open-decisions.md
-            ├── rejected-ideas.md
-            ├── known-limitations-register.md
-            ├── technical-debt-register.md
-            ├── lessons-learned.md
-            ├── safety-invariants.md
-            ├── evidence-index.md
-            └── next-artifact-readiness.md
-```
+This local baseline may support a future publication review. It does not claim that AFEF v0.1.0 is released, the public AFEF repository is initialized, AFDF is frozen, AFEF v0.2.0 exists, GitHub Steward has adopted AFEF, or any production deployment has occurred.

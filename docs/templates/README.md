@@ -1,6 +1,8 @@
 # Templates Index
 
-This directory contains reusable, fill-in-the-blank templates for every stage of the Agent Factory development lifecycle.
+> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+
+This directory contains reusable, fill-in-the-blank templates for each stage of the AFEF lifecycle.
 
 ---
 
@@ -28,7 +30,7 @@ Next Session Handoff
 
 ## Template Summary
 
-*Note: AFDF.1R repaired empty core template files found after AFDF.1/AFDF.2 merge.*
+*Historical template repairs are preserved in Git history.*
 
 | Template | Role | When Used | Inputs | Output |
 |----------|------|-----------|--------|--------|
@@ -44,7 +46,7 @@ Next Session Handoff
 
 ## Relationship to Living Memory
 
-These templates are designed to be filled using data from the [Living Project Memory](../../project-memory/). While templates provide the empty structure, the living memory provides the factual content (status, decisions, evidence). Every filled template must link back to the living memory to ensure context continuity.
+These templates are designed to be filled using data from the [Project Memory Template](../memory/project-memory-template.md). While templates provide the empty structure, the adopting repository's `.afef/` records provide factual status, decisions, and evidence. Every filled template must link back to those authorized operational records to ensure context continuity.
 
 ---
 
@@ -83,7 +85,7 @@ All templates use `<PLACEHOLDER>` syntax for fields that must be filled in:
 ```text
 <PROJECT_NAME>         — Project name
 <ARTIFACT_NAME>        — Artifact name with number
-<SPRINT_NAME>          — Sprint identifier (e.g., A7.1)
+<SPRINT_NAME>          — Sprint identifier (e.g., PROJECT-1.1)
 <SPRINT_GOAL>          — One-sentence sprint goal
 <BRANCH_NAME>          — Git branch name
 <COMMIT_HASH>          — Git commit hash
