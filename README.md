@@ -2,18 +2,26 @@
 
 **Repository:** `agent-factory-engineering-framework`
 
-**Target version:** `0.1.0`
-**Release status: Unreleased**
+**Framework version:** `0.1.0`
 
 The Agent Factory Engineering Framework (AFEF) is a documentation-first development and engineering-governance framework for planning, implementing, reviewing, and handing off bounded work. It provides human-operated specifications, protocols, templates, and memory templates.
 
 AFEF is not an agent runtime, product runtime, workflow engine, CLI, validator, or automated policy-enforcement system. It does not execute tools or replace human review.
 
-## Repository Status
+## Version, Publication, and Release Verification
 
-This repository is intended to become the canonical home of AFEF only after a separate publication and release gate. The local history in this candidate has not been published, tagged, or released, and the empty public namespace is not yet the canonical source of truth.
+The `VERSION` file identifies the documented framework version. Determine the currently published revision, if any, from the designated repository's default branch. Determine release availability by verifying the applicable annotated Git tag and GitHub Release metadata. A version declaration alone does not prove publication or release.
 
-Target version `0.1.0` identifies the baseline being prepared. It is not evidence of a Git tag, GitHub release, public repository initialization, adopter approval, or production maturity.
+The `agent-factory-engineering-framework` repository is the designated canonical repository for AFEF. Verify the currently published canonical revision, if any, from its default branch and release metadata.
+
+These sources answer distinct questions:
+
+- **Documented version:** the `VERSION` file and framework documentation.
+- **Published revision:** the designated repository's remote default branch.
+- **Released revision:** the applicable annotated Git tag and GitHub Release metadata.
+- **Historical provenance:** the provenance record and commit map in [AFDF extraction provenance](docs/provenance/afdf-extraction.md).
+
+Framework version `0.1.0` identifies the documented baseline. It is not by itself evidence of a Git tag, GitHub Release, published revision, adopter approval, or production maturity.
 
 ## Historical Provenance
 
@@ -83,8 +91,8 @@ Use [session-bootstrap.md](session-bootstrap.md) and the relevant role template 
 - It does not define a machine-readable governance contract.
 - It includes no adopter fixture and performs no automatic adoption.
 - Gate vocabulary and lifecycle automation remain candidates for a future, separately authorized version.
-- The target baseline is unreleased and has not passed an independent release gate.
+- Publication, release availability, and independent-review state require verification from the applicable Git refs, GitHub Release metadata, and release evidence.
 
 ## Claims Boundary
 
-This local baseline may support a future publication review. It does not claim that AFEF v0.1.0 is released, the public AFEF repository is initialized, AFDF is frozen, AFEF v0.2.0 exists, GitHub Steward has adopted AFEF, or any production deployment has occurred.
+This documentation baseline supports publication and release review. It does not by itself establish a published or released revision, freeze AFDF, define AFEF v0.2.0, establish GitHub Steward adoption, or demonstrate a production deployment.

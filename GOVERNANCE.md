@@ -2,7 +2,7 @@
 
 ## Repository Authority
 
-The dedicated `agent-factory-engineering-framework` repository is the intended canonical home of AFEF after a separately authorized publication gate. Until publication occurs, this local candidate is unreleased and the public namespace is not the canonical source of truth.
+The `agent-factory-engineering-framework` repository is the designated canonical repository for AFEF. Verify the currently published canonical revision, if any, from its default branch and release metadata. Publication, tags, and releases remain subject to the separately authorized release process.
 
 `learn-agentic-ai` is the historical extraction source. It is not the future source of truth for active AFEF guidance.
 

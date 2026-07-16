@@ -1,6 +1,6 @@
 # Lessons Learned Template
 
-> **AFEF memory-template status:** Target version `0.1.0` is unreleased. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
 
 > **Instructions:** Record lessons learned during sprints and sessions. These help future work avoid repeated mistakes and leverage proven approaches.
 

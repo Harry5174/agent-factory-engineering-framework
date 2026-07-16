@@ -1,8 +1,7 @@
 # Agent Factory Engineering Framework — Specification
 
-**Target version:** `0.1.0`
+**Framework version:** `0.1.0`
 
-**Release status:** Unreleased
 **Implementation model:** Documentation-first and human-operated
 
 ## 1. Purpose
@@ -22,7 +21,7 @@ AFEF is not an agent runtime, product runtime, workflow engine, or automated enf
 
 The AFEF repository owns reusable framework material. Each adopting repository owns its instantiated operational records under `.afef/`. Operational records must be checked against current repository state and cannot grant authority beyond an approved sprint.
 
-The dedicated AFEF repository is the intended canonical home after a separate publication gate. This local target version remains unreleased.
+The `agent-factory-engineering-framework` repository is the designated canonical repository for AFEF. Determine its currently published revision, if any, from the default branch, and determine release availability from the applicable annotated Git tag and GitHub Release metadata. See the [central release-verification guidance](../../README.md#version-publication-and-release-verification).
 
 ## 3. Framework Invariants
 
@@ -134,4 +133,4 @@ Evidence review produces findings and recommendations. It does not by itself gra
 
 Version `0.1.0` is documentation-first. It does not provide schemas, validators, a CLI, CI integration, reusable Actions, automatic prompt generation, machine-readable governance, or adoption fixtures. Gate-vocabulary normalization and lifecycle automation require separately authorized future work.
 
-The version target is unreleased and is not evidence of a tag, public repository initialization, adoption, or production maturity.
+The documented version is not by itself evidence of a published revision, annotated tag, GitHub Release, adoption, or production maturity.

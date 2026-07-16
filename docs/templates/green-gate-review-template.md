@@ -1,6 +1,6 @@
 # Green Gate Review Template
 
-> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To evaluate a completion report and decide whether the sprint's output is ready to merge or proceed to the next phase.

@@ -1,6 +1,6 @@
 # AFEF Documentation
 
-This directory contains active documentation for the Agent Factory Engineering Framework (AFEF) target version `0.1.0`. The baseline is unreleased and the dedicated public repository has not yet been established as canonical.
+This directory contains active documentation for Agent Factory Engineering Framework (AFEF) version `0.1.0`. The designated canonical repository and the sources used to verify publication and release state are described in the [central release-verification guidance](../README.md#version-publication-and-release-verification).
 
 ## Specification
 

@@ -1,6 +1,6 @@
 # Known Limitations Template
 
-> **AFEF memory-template status:** Target version `0.1.0` is unreleased. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
 
 > **Instructions:** Record current system limitations honestly. Update when limitations are resolved or new ones are discovered.
 

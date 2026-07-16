@@ -1,6 +1,6 @@
 # Template Quality Checklist
 
-> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 Use this checklist to evaluate whether a prompt, bootstrap, or template is ready for use. A template that fails multiple checks is likely to cause drift, overclaims, or safety issues.
 

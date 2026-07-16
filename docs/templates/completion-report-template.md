@@ -1,6 +1,6 @@
 # Completion Report Template
 
-> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To officially close a sprint by documenting exactly what was done, providing verifiable evidence of completion, and confirming safety and scope adherence.

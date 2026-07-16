@@ -1,6 +1,6 @@
 # Implementation Supervisor Bootstrap Template
 
-> **AFEF template status:** Target version `0.1.0` is unreleased. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To bootstrap an Implementation Supervisor session with full repository context and approved design, ensuring implementation plans are safe and strictly scoped.

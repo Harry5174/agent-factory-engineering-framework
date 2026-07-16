@@ -1,6 +1,6 @@
 # Project Memory Template
 
-> **AFEF memory-template status:** Target version `0.1.0` is unreleased. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+> **Framework version:** `0.1.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
 
 > **Instructions:** Instantiate this template for each project. Update it at every green gate. This is a living document that preserves **why** decisions were made, not only what happened.
 

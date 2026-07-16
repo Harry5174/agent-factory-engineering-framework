@@ -1,7 +1,6 @@
 # AFEF Session Bootstrap
 
-**Framework target:** `0.1.0`
-**Release status:** Unreleased
+**Framework version:** `0.1.0`
 
 ## Purpose
 
@@ -64,4 +63,4 @@ AFEF owns the source templates under `docs/memory/`. Adopting repositories insta
 - [IDE Agent Bootstrap](docs/templates/ide-agent-bootstrap-template.md)
 - [Green Gate Review](docs/templates/green-gate-review-template.md)
 
-Using a template does not authorize implementation, publication, or release. This AFEF baseline remains unreleased.
+Using a template does not authorize implementation, publication, or release. Verify publication and release state using the [central release-verification guidance](README.md#version-publication-and-release-verification).
