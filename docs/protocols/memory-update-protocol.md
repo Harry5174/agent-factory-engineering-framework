@@ -23,8 +23,8 @@ Memory updates must be grounded in facts.
 4. Other adopter-owned `.afef/` records explicitly named by the sprint.
 
 ## Files to Touch After a YELLOW Gate
-1. `technical-debt-register.md` (Log the required follow-ups that caused the yellow gate).
-2. `known-limitations-register.md` (If the sprint succeeded but revealed a new limitation).
+1. `.afef/technical-debt-register.md` (Adopter-owned; log the required follow-ups that caused the yellow gate).
+2. `.afef/known-limitations-register.md` (Adopter-owned; record a new limitation revealed by an otherwise successful sprint).
 
 ## What NOT to Update After a RED Gate
 - Do not update a status record to "Complete".

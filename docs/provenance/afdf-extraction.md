@@ -9,7 +9,7 @@ source_url: https://github.com/Harry5174/learn-agentic-ai
 source_pin: 7990c16bc377fee8c2dc67d85a0cae2ab56b977b
 historical_source_path: 03-agent-factory/development-framework/
 sprint_a_archive_sha256: 91def02283f97597525df9209ea2846091503eb3e0476bea9d35adcd6de6cc85
-method: selective git-filter-repo hybrid
+method: seven-path selective git-filter-repo extraction with root-prefix rewrite
 ```
 
 The extraction selected exactly seven paths:
@@ -42,7 +42,7 @@ For retained commits, the extraction preserved authorship, committer identity, a
 
 Filtering necessarily rewrote commit hashes. Rewritten history is not byte-identical to the source history, and cryptographic commit signatures cannot generally remain valid when commit identities change. The five extraction commits remain distinguishable from subsequent AFEF canonical commits.
 
-GitHub issues, pull requests, review comments, discussions, stars, watchers, forks, settings, branch protections, Actions run history, secrets, environments, and release discussions were not migrated because they are not part of Git history.
+GitHub issues, pull requests, review comments, discussions, stars, watchers, forks, settings, branch protections, Actions run history, secrets, environments, GitHub Releases, and release discussions were not migrated because they are not part of Git history.
 
 ## Licensing Authority
 
