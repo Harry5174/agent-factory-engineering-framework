@@ -1,0 +1,42 @@
+# Unreleased AFEF v0.2.0 design candidate.
+# Contract: ../../schemas/v0.2/work-record.schema.json
+# Delivery rules: ../protocols/risk-scaled-delivery-protocol.md
+schema_version: "0.2.0"
+work_id: "<WORK_OR_SPRINT_ID>"
+related_specifications:
+  - "SPEC-0001"
+risk_profile: lean
+scope:
+  in_scope:
+    - "<BOUNDED_DELIVERABLE_OR_CHANGE>"
+  out_of_scope:
+    - "<EXPLICIT_NON_SCOPE>"
+authorization_envelope:
+  permitted_actions:
+    - "<AUTHORIZED_ACTION>"
+  affected_paths:
+    - "<REPOSITORY_RELATIVE_PATH>"
+  prohibited_actions:
+    - "<PROHIBITED_ACTION>"
+  constraints:
+    - "<MATERIAL_CONSTRAINT>"
+  stop_conditions:
+    - "<STOP_CONDITION>"
+deliverables:
+  - "<EXPECTED_DELIVERABLE>"
+implementation_state: not_started
+validation_summaries:
+  - check: "<VALIDATION_CHECK>"
+    result: not_run
+    summary: "<COMPACT_RESULT_OR_REASON_NOT_RUN>"
+evidence_references: []
+review_recommendation: not_requested
+final_gate:
+  status: not_issued
+human_checkpoint:
+  status: awaiting
+  owner: "<CHECKPOINT_OWNER>"
+  next_required_action: "<HUMAN_DECISION_OR_REVIEW_REQUIRED>"
+known_limitations:
+  - "<KNOWN_LIMITATION_OR_NONE>"
+next_action: "<NEXT_BOUNDED_ACTION>"

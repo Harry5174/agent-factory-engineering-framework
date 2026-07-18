@@ -2,9 +2,17 @@
 
 This directory contains active documentation for Agent Factory Engineering Framework (AFEF) version `0.1.0`. The designated canonical repository and the sources used to verify publication and release state are described in the [central release-verification guidance](../README.md#version-publication-and-release-verification).
 
+The v0.1.0 material below remains active. The separately identified v0.2.0
+artifacts are unreleased design candidates; they do not establish publication,
+release, validation, or adoption.
+
 ## Specification
 
 - [Agent Factory Engineering Framework specification](specs/agent-factory-engineering-framework.md)
+
+### Unreleased v0.2.0 Design Candidate
+
+- [Minimum-adoption specification](specs/afef-v0.2.0-minimum-adoption.md)
 
 ## Protocols
 
@@ -19,6 +27,12 @@ This directory contains active documentation for Agent Factory Engineering Frame
 - [Decision logging](protocols/decision-log-protocol.md)
 - [Overclaim prevention](protocols/overclaim-prevention-protocol.md)
 
+### Unreleased v0.2.0 Candidate Protocols
+
+- [Project discovery](protocols/project-discovery-protocol.md)
+- [Specification lifecycle](protocols/specification-lifecycle-protocol.md)
+- [Risk-scaled delivery](protocols/risk-scaled-delivery-protocol.md)
+
 ## Templates
 
 - [Template index](templates/README.md)
@@ -30,6 +44,15 @@ This directory contains active documentation for Agent Factory Engineering Frame
 - [Green gate review](templates/green-gate-review-template.md)
 - [Next-session handoff](templates/next-session-handoff-template.md)
 - [Template quality checklist](templates/template-quality-checklist.md)
+
+### Unreleased v0.2.0 Candidate Contracts and Templates
+
+- [`project-manifest.schema.json`](../schemas/v0.2/project-manifest.schema.json)
+  and [project manifest template](templates/project-manifest-template.yaml)
+- [`specification.schema.json`](../schemas/v0.2/specification.schema.json)
+  and [specification template](templates/specification-template.md)
+- [`work-record.schema.json`](../schemas/v0.2/work-record.schema.json)
+  and [work record template](templates/work-record-template.yaml)
 
 ## Memory Templates
 

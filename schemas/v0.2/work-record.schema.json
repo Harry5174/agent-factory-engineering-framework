@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:afef:schema:v0.2:work-record",
+  "title": "AFEF v0.2 Work Record",
+  "description": "Adopter-owned bounded authorization, implementation state, evidence, review, and gate record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "work_id",
+    "related_specifications",
+    "risk_profile",
+    "scope",
+    "authorization_envelope",
+    "implementation_state",
+    "human_checkpoint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "work_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "related_specifications": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/specificationId"
+      },
+      "uniqueItems": true
+    },
+    "risk_profile": {
+      "enum": [
+        "lean",
+        "standard",
+        "high_assurance"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "in_scope",
+        "out_of_scope"
+      ],
+      "properties": {
+        "in_scope": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "out_of_scope": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        }
+      }
+    },
+    "authorization_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permitted_actions",
+        "prohibited_actions"
+      ],
+      "properties": {
+        "permitted_actions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "affected_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repositoryPath"
+          },
+          "uniqueItems": true
+        },
+        "prohibited_actions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "constraints": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "stop_conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        },
+        "separate_authorization_references": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Exact approval references for exceptional side effects. Absence means the operation is not separately authorized.",
+          "properties": {
+            "pushes": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "tags_and_releases": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "production_changes": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "credential_access": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "destructive_operations": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "external_writes": {
+              "$ref": "#/$defs/authorizationReference"
+            },
+            "security_sensitive_exceptions": {
+              "$ref": "#/$defs/authorizationReference"
+            }
+          }
+        }
+      }
+    },
+    "deliverables": {
+      "$ref": "#/$defs/nonEmptyStringArray"
+    },
+    "implementation_state": {
+      "enum": [
+        "not_started",
+        "in_progress",
+        "implemented",
+        "verified",
+        "deferred"
+      ]
+    },
+    "repository_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{40}$"
+        },
+        "working_tree": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "minProperties": 1
+    },
+    "validation_summaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check",
+          "result"
+        ],
+        "properties": {
+          "check": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "passed",
+              "failed",
+              "not_run"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "review_recommendation": {
+      "enum": [
+        "not_requested",
+        "pending",
+        "accept",
+        "accept_with_conditions",
+        "changes_required"
+      ]
+    },
+    "final_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_issued",
+            "accepted",
+            "accepted_with_conditions",
+            "rejected"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        }
+      }
+    },
+    "human_checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "next_required_action"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_reached",
+            "awaiting",
+            "completed"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_required_action": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "known_limitations": {
+      "$ref": "#/$defs/nonEmptyStringArray"
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "specificationId": {
+      "type": "string",
+      "pattern": "^SPEC-[0-9]{4}$"
+    },
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/]).+"
+    },
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authorizationReference": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable reference to an exact, separately recorded authorization."
+    }
+  }
+}

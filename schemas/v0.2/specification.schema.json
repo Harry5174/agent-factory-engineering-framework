@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:afef:schema:v0.2:specification",
+  "title": "AFEF v0.2 Specification Metadata",
+  "description": "Structured metadata or YAML front matter for one compact adopter-owned specification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "specification_id",
+    "title",
+    "owner",
+    "specification_status",
+    "delivery_status",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "specification_id": {
+      "$ref": "#/$defs/specificationId"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "updated_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "specification_status": {
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "active",
+        "superseded",
+        "retired"
+      ]
+    },
+    "delivery_status": {
+      "enum": [
+        "not_started",
+        "in_progress",
+        "implemented",
+        "verified",
+        "deferred"
+      ]
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/specificationId"
+      },
+      "uniqueItems": true
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/specificationId"
+      },
+      "uniqueItems": true
+    },
+    "superseded_by": {
+      "$ref": "#/$defs/specificationId"
+    },
+    "affected_paths": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/repositoryPath"
+      },
+      "uniqueItems": true
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^AC-[0-9]{4}$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "related_decisions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "related_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "specificationId": {
+      "type": "string",
+      "pattern": "^SPEC-[0-9]{4}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/]).+"
+    }
+  }
+}

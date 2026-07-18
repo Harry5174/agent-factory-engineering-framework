@@ -1,0 +1,31 @@
+# Unreleased AFEF v0.2.0 design candidate.
+# Contract: ../../schemas/v0.2/project-manifest.schema.json
+schema_version: "0.2.0"
+project:
+  id: "<PROJECT_ID>"
+  name: "<PROJECT_NAME>"
+repository:
+  identity: "<REPOSITORY_URL_OR_HOST_OWNER_NAME>"
+  default_branch: "<DEFAULT_BRANCH>"
+afef:
+  version: "<IMMUTABLE_AFEF_VERSION>"
+  commit: "<FULL_40_CHARACTER_AFEF_COMMIT>"
+constitution:
+  inline:
+    - "<DURABLE_PROJECT_PRINCIPLE_OR_SAFETY_BOUNDARY>"
+paths:
+  documentation: "<REPOSITORY_RELATIVE_DOCUMENTATION_PATH>"
+  source: "<REPOSITORY_RELATIVE_SOURCE_PATH>"
+  tests: "<REPOSITORY_RELATIVE_TESTS_PATH>"
+  architecture: "<REPOSITORY_RELATIVE_ARCHITECTURE_PATH>"
+  decisions: "<REPOSITORY_RELATIVE_DECISIONS_PATH>"
+  specifications: "<REPOSITORY_RELATIVE_SPECIFICATIONS_PATH>"
+  work_records: "<REPOSITORY_RELATIVE_WORK_RECORDS_PATH>"
+  evidence: "<REPOSITORY_RELATIVE_EVIDENCE_PATH>"
+default_risk_profile: lean
+safety_boundaries:
+  - "<PROJECT_SPECIFIC_SAFETY_BOUNDARY>"
+ownership:
+  project_owner: "<PROJECT_OWNER>"
+  specification_approver: "<SPECIFICATION_APPROVER>"
+  final_gate_owner: "<FINAL_GATE_OWNER>"

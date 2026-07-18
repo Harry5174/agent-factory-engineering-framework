@@ -4,6 +4,23 @@
 
 This directory contains reusable, fill-in-the-blank templates for each stage of the AFEF lifecycle.
 
+## Unreleased v0.2.0 Candidate Adoption Templates
+
+These compact templates implement the candidate three-record adoption model. They
+are unreleased design candidates and do not establish v0.2.0 publication, release,
+validation, or adoption.
+
+- [Project manifest](project-manifest-template.yaml) — minimal adopter-owned
+  project identity, immutable AFEF pin, constitution, paths, and safety policy.
+- [Specification](specification-template.md) — one compact specification with
+  structured metadata and stable acceptance criteria.
+- [Work record](work-record-template.yaml) — bounded authorization,
+  implementation evidence, review recommendation, human checkpoint, and final
+  gate.
+
+Their corresponding candidate schema contracts are indexed in the
+[documentation index](../README.md#unreleased-v020-candidate-contracts-and-templates).
+
 ---
 
 ## Lifecycle Map
