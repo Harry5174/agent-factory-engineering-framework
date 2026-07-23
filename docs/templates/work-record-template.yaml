@@ -1,6 +1,7 @@
 # Unreleased AFEF v0.2.0 design candidate.
 # Contract: ../../schemas/v0.2/work-record.schema.json
 # Delivery rules: ../protocols/risk-scaled-delivery-protocol.md
+# Placeholder actor and authorization references are not identity or approval proof.
 schema_version: "0.2.0"
 work_id: "<WORK_OR_SPRINT_ID>"
 related_specifications:
@@ -12,12 +13,24 @@ scope:
   out_of_scope:
     - "<EXPLICIT_NON_SCOPE>"
 authorization_envelope:
-  permitted_actions:
-    - "<AUTHORIZED_ACTION>"
+  operations:
+    - operation_id: "OP-001"
+      effect_class: local-reversible-write
+      decision: permitted
+      authorization_requirement: separate_reference
+      description: "<OPTIONAL_NON_NORMATIVE_OPERATION_DESCRIPTION>"
+    - operation_id: "OP-002"
+      effect_class: external-write
+      decision: prohibited
+      authorization_requirement: not_applicable
+      description: "<OPTIONAL_NON_NORMATIVE_PROHIBITION_DESCRIPTION>"
+  authorization_references:
+    - authorization_id: "AUTH-001"
+      reference: "<EXACT_SEPARATE_APPROVAL_OR_EVIDENCE_REFERENCE>"
+      operation_ids:
+        - "OP-001"
   affected_paths:
     - "<REPOSITORY_RELATIVE_PATH>"
-  prohibited_actions:
-    - "<PROHIBITED_ACTION>"
   constraints:
     - "<MATERIAL_CONSTRAINT>"
   stop_conditions:
@@ -30,12 +43,15 @@ validation_summaries:
     result: not_run
     summary: "<COMPACT_RESULT_OR_REASON_NOT_RUN>"
 evidence_references: []
-review_recommendation: not_requested
+reviews: []
 final_gate:
   status: not_issued
 human_checkpoint:
   status: awaiting
-  owner: "<CHECKPOINT_OWNER>"
+  owner:
+    actor_id: "<STABLE_OPAQUE_CHECKPOINT_OWNER_ID>"
+    role: implementation_supervisor
+    display_name: "<OPTIONAL_NON_NORMATIVE_LABEL>"
   next_required_action: "<HUMAN_DECISION_OR_REVIEW_REQUIRED>"
 known_limitations:
   - "<KNOWN_LIMITATION_OR_NONE>"

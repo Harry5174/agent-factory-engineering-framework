@@ -13,6 +13,8 @@
     "scope",
     "authorization_envelope",
     "implementation_state",
+    "reviews",
+    "final_gate",
     "human_checkpoint"
   ],
   "properties": {
@@ -58,12 +60,23 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "permitted_actions",
-        "prohibited_actions"
+        "operations"
       ],
       "properties": {
-        "permitted_actions": {
-          "$ref": "#/$defs/nonEmptyStringArray"
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/operation"
+          },
+          "description": "Normative operation decisions. Operation IDs must be unique within the work record; I2 enforces key uniqueness and decision consistency."
+        },
+        "authorization_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operationAuthorization"
+          },
+          "description": "Separate authorization or evidence references bound to exact operation IDs. Authorization IDs must be unique within the work record."
         },
         "affected_paths": {
           "type": "array",
@@ -72,44 +85,39 @@
           },
           "uniqueItems": true
         },
-        "prohibited_actions": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        },
         "constraints": {
           "$ref": "#/$defs/nonEmptyStringArray"
         },
         "stop_conditions": {
           "$ref": "#/$defs/nonEmptyStringArray"
-        },
-        "separate_authorization_references": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "Exact approval references for exceptional side effects. Absence means the operation is not separately authorized.",
-          "properties": {
-            "pushes": {
-              "$ref": "#/$defs/authorizationReference"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operations": {
+                "contains": {
+                  "$ref": "#/$defs/permittedSeparateReferenceOperation"
+                }
+              }
             },
-            "tags_and_releases": {
-              "$ref": "#/$defs/authorizationReference"
-            },
-            "production_changes": {
-              "$ref": "#/$defs/authorizationReference"
-            },
-            "credential_access": {
-              "$ref": "#/$defs/authorizationReference"
-            },
-            "destructive_operations": {
-              "$ref": "#/$defs/authorizationReference"
-            },
-            "external_writes": {
-              "$ref": "#/$defs/authorizationReference"
-            },
-            "security_sensitive_exceptions": {
-              "$ref": "#/$defs/authorizationReference"
+            "required": [
+              "operations"
+            ]
+          },
+          "then": {
+            "required": [
+              "authorization_references"
+            ],
+            "properties": {
+              "authorization_references": {
+                "minItems": 1
+              }
             }
           }
         }
-      }
+      ]
     },
     "deliverables": {
       "$ref": "#/$defs/nonEmptyStringArray"
@@ -122,6 +130,9 @@
         "verified",
         "deferred"
       ]
+    },
+    "implementer": {
+      "$ref": "#/$defs/actor"
     },
     "repository_evidence": {
       "type": "object",
@@ -173,42 +184,18 @@
       },
       "uniqueItems": true
     },
-    "review_recommendation": {
-      "enum": [
-        "not_requested",
-        "pending",
-        "accept",
-        "accept_with_conditions",
-        "changes_required"
-      ]
+    "reviews": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/review"
+      },
+      "description": "Zero or more review records. An empty array means no review has been requested or completed."
+    },
+    "independent_review": {
+      "$ref": "#/$defs/independentReview"
     },
     "final_gate": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "status"
-      ],
-      "properties": {
-        "status": {
-          "enum": [
-            "not_issued",
-            "accepted",
-            "accepted_with_conditions",
-            "rejected"
-          ]
-        },
-        "owner": {
-          "type": "string",
-          "minLength": 1
-        },
-        "recorded_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "conditions": {
-          "$ref": "#/$defs/nonEmptyStringArray"
-        }
-      }
+      "$ref": "#/$defs/finalGate"
     },
     "human_checkpoint": {
       "type": "object",
@@ -226,8 +213,7 @@
           ]
         },
         "owner": {
-          "type": "string",
-          "minLength": 1
+          "$ref": "#/$defs/actor"
         },
         "next_required_action": {
           "type": "string",
@@ -243,6 +229,89 @@
       "minLength": 1
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "implementation_state": {
+            "enum": [
+              "in_progress",
+              "implemented",
+              "verified"
+            ]
+          }
+        },
+        "required": [
+          "implementation_state"
+        ]
+      },
+      "then": {
+        "required": [
+          "implementer"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_profile": {
+            "const": "high_assurance"
+          }
+        },
+        "required": [
+          "risk_profile"
+        ]
+      },
+      "then": {
+        "required": [
+          "independent_review"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "risk_profile": {
+            "const": "high_assurance"
+          },
+          "final_gate": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "accepted",
+                  "accepted_with_conditions"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "risk_profile",
+          "final_gate"
+        ]
+      },
+      "then": {
+        "required": [
+          "independent_review"
+        ],
+        "properties": {
+          "independent_review": {
+            "properties": {
+              "status": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "specificationId": {
       "type": "string",
@@ -251,7 +320,7 @@
     "repositoryPath": {
       "type": "string",
       "minLength": 1,
-      "pattern": "^(?!/)(?![A-Za-z]:[\\\\/]).+"
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!~(?:/|$))(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?!.*\\\\)(?!.*//)[^/\\\\]+(?:/[^/\\\\]+)*$"
     },
     "nonEmptyStringArray": {
       "type": "array",
@@ -261,10 +330,402 @@
         "minLength": 1
       }
     },
-    "authorizationReference": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Stable reference to an exact, separately recorded authorization."
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_id",
+        "role"
+      ],
+      "properties": {
+        "actor_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable opaque project identity. Display names are not identity."
+        },
+        "role": {
+          "enum": [
+            "product_owner",
+            "design_supervisor",
+            "implementation_supervisor",
+            "ide_agent",
+            "independent_reviewer"
+          ]
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional non-normative label that must not determine role separation."
+        }
+      }
+    },
+    "independentReviewer": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/actor"
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "independent_reviewer"
+            }
+          }
+        }
+      ]
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "effect_class",
+        "decision",
+        "authorization_requirement"
+      ],
+      "properties": {
+        "operation_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "effect_class": {
+          "enum": [
+            "local-read",
+            "local-reversible-write",
+            "local-destructive",
+            "external-read",
+            "external-write",
+            "external-destructive",
+            "identity-permission-change",
+            "publication-release"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "permitted",
+            "prohibited"
+          ]
+        },
+        "authorization_requirement": {
+          "enum": [
+            "bounded_work_envelope",
+            "separate_reference",
+            "not_applicable"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional non-normative explanation; it does not grant or prohibit authority."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "prohibited"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "authorization_requirement": {
+                "const": "not_applicable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$ref": "#/$defs/permittedProtectedOperation"
+          },
+          "then": {
+            "properties": {
+              "authorization_requirement": {
+                "const": "separate_reference"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "permittedProtectedOperation": {
+      "type": "object",
+      "properties": {
+        "effect_class": {
+          "enum": [
+            "local-destructive",
+            "external-write",
+            "external-destructive",
+            "identity-permission-change",
+            "publication-release"
+          ]
+        },
+        "decision": {
+          "const": "permitted"
+        }
+      },
+      "required": [
+        "effect_class",
+        "decision"
+      ]
+    },
+    "permittedSeparateReferenceOperation": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "const": "permitted"
+        },
+        "authorization_requirement": {
+          "const": "separate_reference"
+        }
+      },
+      "required": [
+        "decision",
+        "authorization_requirement"
+      ]
+    },
+    "operationAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorization_id",
+        "reference",
+        "operation_ids"
+      ],
+      "properties": {
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^AUTH-[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable exact reference to separately recorded approval or evidence; a placeholder is not proof of approval."
+        },
+        "operation_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^OP-[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_id",
+        "status"
+      ],
+      "properties": {
+        "review_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "completed"
+          ]
+        },
+        "reviewer": {
+          "$ref": "#/$defs/actor"
+        },
+        "recommendation": {
+          "enum": [
+            "accept",
+            "accept_with_conditions",
+            "changes_required"
+          ]
+        },
+        "evidence_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewer",
+              "recommendation",
+              "evidence_reference"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "recommendation": {
+                "const": "accept_with_conditions"
+              }
+            },
+            "required": [
+              "recommendation"
+            ]
+          },
+          "then": {
+            "required": [
+              "conditions"
+            ]
+          }
+        }
+      ]
+    },
+    "independentReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "reviewer": {
+          "$ref": "#/$defs/independentReviewer"
+        },
+        "evidence_reference": {
+          "$ref": "#/$defs/repositoryPath",
+          "description": "Repository-local review or evidence reference."
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "accepted",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewer",
+              "evidence_reference",
+              "reviewed_at"
+            ]
+          }
+        }
+      ]
+    },
+    "finalGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_issued",
+            "accepted",
+            "accepted_with_conditions",
+            "rejected"
+          ]
+        },
+        "owner": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/actor"
+            },
+            {
+              "not": {
+                "properties": {
+                  "role": {
+                    "const": "ide_agent"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              }
+            }
+          ]
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conditions": {
+          "$ref": "#/$defs/nonEmptyStringArray"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "accepted",
+                  "accepted_with_conditions",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "owner",
+              "recorded_at"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "accepted_with_conditions"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "conditions"
+            ]
+          }
+        }
+      ]
     }
   }
 }

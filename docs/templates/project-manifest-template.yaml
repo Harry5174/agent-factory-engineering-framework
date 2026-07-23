@@ -1,5 +1,7 @@
 # Unreleased AFEF v0.2.0 design candidate.
 # Contract: ../../schemas/v0.2/project-manifest.schema.json
+# Normative location: <project-root>/.afef/project-manifest.yaml
+# Placeholder actor IDs and labels are not identity or approval proof.
 schema_version: "0.2.0"
 project:
   id: "<PROJECT_ID>"
@@ -14,18 +16,21 @@ constitution:
   inline:
     - "<DURABLE_PROJECT_PRINCIPLE_OR_SAFETY_BOUNDARY>"
 paths:
-  documentation: "<REPOSITORY_RELATIVE_DOCUMENTATION_PATH>"
-  source: "<REPOSITORY_RELATIVE_SOURCE_PATH>"
-  tests: "<REPOSITORY_RELATIVE_TESTS_PATH>"
-  architecture: "<REPOSITORY_RELATIVE_ARCHITECTURE_PATH>"
-  decisions: "<REPOSITORY_RELATIVE_DECISIONS_PATH>"
-  specifications: "<REPOSITORY_RELATIVE_SPECIFICATIONS_PATH>"
-  work_records: "<REPOSITORY_RELATIVE_WORK_RECORDS_PATH>"
-  evidence: "<REPOSITORY_RELATIVE_EVIDENCE_PATH>"
+  specifications: ".afef/specifications"
+  work_records: ".afef/work-records"
 default_risk_profile: lean
 safety_boundaries:
   - "<PROJECT_SPECIFIC_SAFETY_BOUNDARY>"
 ownership:
-  project_owner: "<PROJECT_OWNER>"
-  specification_approver: "<SPECIFICATION_APPROVER>"
-  final_gate_owner: "<FINAL_GATE_OWNER>"
+  project_owner:
+    actor_id: "<STABLE_OPAQUE_PROJECT_OWNER_ID>"
+    role: product_owner
+    display_name: "<OPTIONAL_NON_NORMATIVE_LABEL>"
+  specification_approver:
+    actor_id: "<STABLE_OPAQUE_SPECIFICATION_APPROVER_ID>"
+    role: product_owner
+    display_name: "<OPTIONAL_NON_NORMATIVE_LABEL>"
+  final_gate_owner:
+    actor_id: "<STABLE_OPAQUE_FINAL_GATE_OWNER_ID>"
+    role: design_supervisor
+    display_name: "<OPTIONAL_NON_NORMATIVE_LABEL>"

@@ -36,15 +36,18 @@ model defines exactly three record categories and exactly three schemas:
 3. A **work record** that scopes authorized delivery and records evidence, review
    recommendation, human checkpoint, and final gate.
 
-An adopter normally maintains one project manifest. It may preserve multiple
-historical specifications and work records. Multiple concurrent active
+An adopter maintains exactly one project manifest at the sole normative location
+`<project-root>/.afef/project-manifest.yaml`. No alternate filename or configurable
+manifest location is accepted, and manifest discovery is not recursive. It may
+preserve multiple historical specifications and work records. Multiple concurrent active
 specifications or work records are permitted when genuinely required by
 concurrent project work. The model limits record categories and schemas; it does
 not impose a project-wide maximum of one specification or one work record.
 
-Records may use adopter-selected locations declared in the manifest. A project
-does not have to create numerous top-level documentation directories or split one
-specification into a directory of supporting documents.
+The manifest supplies required repository-relative directories for specifications
+and work records. A project does not have to create optional top-level
+documentation, design, prompt, source, test, or deployment directories or split
+one specification into a directory of supporting documents.
 
 Governance initialization may create authorized `.afef/` records. Technology
 initialization—including dependency installation, runtime scaffolding, databases,
@@ -86,21 +89,36 @@ Specifications use stable sequential identities such as `SPEC-0001` and
 defines approval, activation, amendment, supersession, retirement, and drift
 reconciliation.
 
-## 5. Configurable Project Paths
+## 5. Record Locations and Formats
 
-The project manifest can point to existing repository-relative locations for:
+The validator begins at exactly `.afef/project-manifest.yaml`, relative to the
+adopting project root. No `.yml`, JSON, TOML, alternate manifest name, or
+configurable manifest location is accepted. The manifest's `paths.specifications`
+and `paths.work_records` fields are required and identify directories relative to
+that same root.
 
-- documentation
-- source
-- tests
-- architecture
-- decisions
-- specifications
-- work records
-- evidence
+All configured paths use deterministic repository-style `/` semantics. They must
+not be absolute, drive-qualified, home-relative, contain `.` or `..` traversal
+segments, or resolve outside the project root. Resolution must not follow a
+symlink outside the project root.
 
-Paths describe where adopter-owned material already lives or will be maintained.
-They do not require a prescribed repository layout.
+Only these I1 formats are recognized:
+
+| Record | Format |
+|---|---|
+| Project manifest | YAML at `.afef/project-manifest.yaml` |
+| Specification | Markdown with YAML front matter |
+| Work record | YAML |
+
+For discovery, YAML means the `.yaml` extension only and Markdown means `.md`
+only; `.yml` and other variants are unsupported.
+
+Record discovery within each configured directory is non-recursive: inspect
+direct files only, reject unsupported extensions, and sort discovered
+project-relative paths lexically. Missing, empty, duplicate, overlapping, or
+escaping record directories and duplicate discovered records are contract
+nonconformance. An unreadable directory or filesystem failure is an operational
+failure for future I2. Nested directories are not traversed.
 
 ## 6. Risk Profiles and Authorization
 
@@ -116,6 +134,20 @@ Each work record selects a profile, defines an authorization envelope, and recor
 proportional evidence and human checkpoints. Higher-risk operation characteristics
 override a lower selected profile. The IDE Agent never self-approves, and an
 authorization envelope never silently grants side-effect authority.
+
+Normative actors use a stable opaque `actor_id` and one canonical `role`:
+`product_owner`, `design_supervisor`, `implementation_supervisor`, `ide_agent`, or
+`independent_reviewer`. `display_name` is optional, non-normative, and never
+determines separation. Manifest authority assignments and work-record
+implementers, reviewers, independent reviewers, final-gate owners, and recorded
+checkpoint owners use this actor structure.
+
+The authorization envelope's normative source is its structured `operations`
+collection, not free-form action prose. Every operation has a stable
+`operation_id`, bounded `effect_class`, `permitted` or `prohibited` decision, and
+structured authorization requirement. Separate authorization references bind an
+exact reference to exact operation IDs. Optional descriptions are explanatory
+only.
 
 ## 7. Context Budget
 
@@ -145,7 +177,12 @@ The three record categories are represented by exactly three schemas:
 | Work record | [`work-record.schema.json`](../../schemas/v0.2/work-record.schema.json) | [Work record template](../templates/work-record-template.yaml) |
 
 Schemas define record shape but do not validate themselves, prove approval, grant
-authority, or establish factual accuracy.
+authority, or establish factual accuracy. Validation can confirm only the
+identities, roles, effect classifications, decisions, and authorization bindings
+represented by records. It cannot prove real-world or cryptographic identity,
+that two IDs are controlled by different people, approval authenticity, truthful
+effect classification, actual external behavior, or continuing authority outside
+the recorded scope.
 
 ## 9. Sequenced Capabilities
 

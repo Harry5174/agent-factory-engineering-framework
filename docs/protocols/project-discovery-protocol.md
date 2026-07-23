@@ -8,6 +8,11 @@ it is not permission to initialize product technology.
 
 ## Inputs
 
+Begin at the sole normative manifest path:
+`<project-root>/.afef/project-manifest.yaml`. Exactly one YAML manifest must exist
+there. Do not accept an alternate filename, configurable location, or recursively
+search for a manifest.
+
 Inspect available project facts and ask only what remains unresolved and material:
 
 - project goal and users;
@@ -25,6 +30,40 @@ Inspect available project facts and ask only what remains unresolved and materia
 The constitution captures durable principles, safety boundaries, ownership, and
 decision rules. Store it once, inline in the project manifest or at the manifest's
 declared constitution reference.
+
+## Record Discovery Contract
+
+The manifest must provide `paths.specifications` and `paths.work_records`. Each is
+a directory relative to the adopter project root. Repository paths use `/`
+semantics and must not be absolute, drive-qualified, home-relative, contain `.`
+or `..` traversal segments, or resolve outside the project root. Path resolution
+must never follow a symlink outside the project root.
+
+Only these record forms are established:
+
+| Record | Accepted form |
+|---|---|
+| Project manifest | YAML at `.afef/project-manifest.yaml` |
+| Specification | Markdown with YAML front matter |
+| Work record | YAML |
+
+For discovery, YAML means `.yaml` only and Markdown means `.md` only. `.yml` and
+other format or extension variants are unsupported.
+
+For specifications and work records, inspect only direct files in the respective
+configured directory. Do not recursively traverse nested directories. Sort
+discovered project-relative paths lexically before processing.
+
+The following are contract nonconformance: a missing or empty configured record
+directory; duplicate configured directories; duplicate discovered records;
+overlapping locations that discover the same file; an unsupported record
+extension in a configured record directory; or any path resolving outside the
+project root. An unreadable directory or other filesystem failure is an
+operational failure for future I2. These are contract semantics only; this
+protocol does not define I2 diagnostics or exit codes.
+
+Multiple historical and concurrent specification and work-record instances remain
+valid. The three-record model limits categories and schemas, not instance count.
 
 ## Conversation Rules
 
