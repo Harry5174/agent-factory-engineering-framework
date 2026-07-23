@@ -26,14 +26,21 @@ product technology.
 AFEF owns reusable specifications, protocols, schemas, and templates. An adopter
 owns instantiated records, project facts, approvals, and evidence.
 
-The minimal adopter control plane is `.afef/` containing three active records:
+The minimal adopter control plane under `.afef/` uses a three-record model. The
+model defines exactly three record categories and exactly three schemas:
 
 1. A **project manifest** that identifies the project, pins the immutable AFEF
    version and commit, records the constitution, and maps project paths.
-2. An **active specification** with a stable identity such as `SPEC-0001` that
-   defines approved intended behavior.
-3. An **active work record** that scopes authorized delivery and records evidence,
-   review recommendation, human checkpoint, and final gate.
+2. A **specification** with a stable identity such as `SPEC-0001` that defines
+   approved intended behavior.
+3. A **work record** that scopes authorized delivery and records evidence, review
+   recommendation, human checkpoint, and final gate.
+
+An adopter normally maintains one project manifest. It may preserve multiple
+historical specifications and work records. Multiple concurrent active
+specifications or work records are permitted when genuinely required by
+concurrent project work. The model limits record categories and schemas; it does
+not impose a project-wide maximum of one specification or one work record.
 
 Records may use adopter-selected locations declared in the manifest. A project
 does not have to create numerous top-level documentation directories or split one
@@ -118,17 +125,18 @@ prose, and optional fields should be omitted when they add no safety or clarity.
 
 A normal implementation session should normally load only:
 
-1. the project manifest;
-2. the active specification;
+1. one project manifest;
+2. the directly relevant specification;
 3. the active work record; and
 4. one directly relevant AFEF protocol.
 
 Additional context is loaded only to resolve an identified question or
-contradiction.
+contradiction. Agents must not load unrelated specifications or work records by
+default.
 
 ## 8. Contract Set
 
-The three records are represented by:
+The three record categories are represented by exactly three schemas:
 
 | Record | Schema | Compact starting template |
 |---|---|---|
@@ -139,14 +147,16 @@ The three records are represented by:
 Schemas define record shape but do not validate themselves, prove approval, grant
 authority, or establish factual accuracy.
 
-## 9. Deferred Capabilities
+## 9. Sequenced Capabilities
 
-- **I2:** behavioral schema validation and any separately authorized conformance
-  work.
-- **I3:** separately authorized adoption or integration work.
-- **Post-v0.2.0:** generators, validators, automation, fixtures, and broader
-  tooling, if designed and authorized.
-- **v0.3.0:** any runtime or automated governance capabilities accepted through a
-  future architecture and release process.
+- **I2, if separately authorized:** deterministic offline validator; valid and
+  invalid fixtures; schema and cross-record conformance tests; validator exit-code
+  behavior; and repository-local CI.
+- **I3, if separately authorized:** minimal clean-room adopter; non-authoritative
+  GitHub Steward fixture; offline adoption test; independent release review; and
+  AFEF v0.2.0 release preparation.
+- **Post-v0.2.0:** project generators or initializers; agent runtime or
+  orchestration; automated governance or policy enforcement; and broader tooling
+  justified by adoption experience.
 
-No deferred capability is implied, implemented, or authorized by this candidate.
+This sequence does not authorize I2, I3, release, publication, or remote mutation.
