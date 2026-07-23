@@ -704,6 +704,31 @@ def test_record_affected_paths_may_be_contained_and_absent(
     assert result.stdout == ""
 
 
+@pytest.mark.parametrize("category", ["specification", "work-record"])
+def test_record_affected_paths_reject_nul_as_conformance_failure(
+    tmp_path: Path, category: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    declared = "segment\x00name"
+    if category == "specification":
+        record = load_specification(project)
+        record["affected_paths"] = [declared]
+        write_specification(project, "spec-0001.md", record)
+    else:
+        record = load_work_record(project)
+        record["authorization_envelope"]["affected_paths"] = [declared]
+        write_work_record(project, record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 1
+    assert result.stdout.count("E_PATH_INVALID") == 1
+    assert result.stderr == ""
+    assert "E_INTERNAL" not in result.stdout
+    assert "Traceback" not in result.stdout
+    assert str(tmp_path) not in result.stdout
+
+
 def test_valid_three_record_historical_chain(tmp_path: Path) -> None:
     project = copy_fixture("multiple-historical", tmp_path)
     second = load_specification(project, "spec-0002.md")
@@ -720,6 +745,64 @@ def test_valid_three_record_historical_chain(tmp_path: Path) -> None:
 
     assert result.returncode == 0
     assert result.stdout == ""
+
+
+def test_valid_long_historical_chain_exceeds_recursion_limit(tmp_path: Path) -> None:
+    project = copy_fixture("valid", tmp_path)
+    specification_directory = project / ".afef" / "specifications"
+    (specification_directory / "spec-0001.md").unlink()
+    chain_length = 1200
+    for index in range(1, chain_length + 1):
+        specification_id = f"SPEC-{index:04d}"
+        successor_id = (
+            f"SPEC-{index + 1:04d}" if index < chain_length else None
+        )
+        predecessors = [f"SPEC-{index - 1:04d}"] if index > 1 else []
+        status = "superseded" if successor_id is not None else "active"
+        write_specification(
+            project,
+            f"spec-{index:04d}.md",
+            minimal_specification(
+                specification_id,
+                status,
+                supersedes=predecessors,
+                superseded_by=successor_id,
+            ),
+        )
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+    assert result.stderr == ""
+
+
+def test_long_supersession_cycle_exceeds_recursion_limit(tmp_path: Path) -> None:
+    project = copy_fixture("valid", tmp_path)
+    specification_directory = project / ".afef" / "specifications"
+    (specification_directory / "spec-0001.md").unlink()
+    cycle_length = 1200
+    for index in range(1, cycle_length + 1):
+        successor = (index % cycle_length) + 1
+        predecessor = ((index - 2) % cycle_length) + 1
+        write_specification(
+            project,
+            f"spec-{index:04d}.md",
+            minimal_specification(
+                f"SPEC-{index:04d}",
+                "superseded",
+                supersedes=[f"SPEC-{predecessor:04d}"],
+                superseded_by=f"SPEC-{successor:04d}",
+            ),
+        )
+
+    result = run_validator(project)
+
+    assert result.returncode == 1
+    assert result.stdout.count("E_SUPERSESSION_CYCLE") == 1
+    assert result.stderr == ""
+    assert "E_INTERNAL" not in result.stdout
+    assert "Traceback" not in result.stdout
 
 
 def test_active_predecessor_and_missing_supersession_references_are_rejected(

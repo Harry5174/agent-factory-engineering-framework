@@ -212,7 +212,11 @@ def _load_schemas() -> dict[str, dict[str, Any]]:
 
 
 def _is_repository_path(value: Any) -> bool:
-    return isinstance(value, str) and REPOSITORY_PATH_PATTERN.fullmatch(value) is not None
+    return (
+        isinstance(value, str)
+        and "\x00" not in value
+        and REPOSITORY_PATH_PATTERN.fullmatch(value) is not None
+    )
 
 
 def _resolve_declared_path(
@@ -436,45 +440,48 @@ def _validate_specification_relationships(
                     )
                 )
 
-    index = 0
-    stack: list[str] = []
-    on_stack: set[str] = set()
-    indexes: dict[str, int] = {}
-    lowlinks: dict[str, int] = {}
+    visited: set[str] = set()
+    finish_order: list[str] = []
+    for starting_id in sorted(graph):
+        if starting_id in visited:
+            continue
+        stack: list[tuple[str, bool]] = [(starting_id, False)]
+        while stack:
+            specification_id, expanded = stack.pop()
+            if expanded:
+                finish_order.append(specification_id)
+                continue
+            if specification_id in visited:
+                continue
+            visited.add(specification_id)
+            stack.append((specification_id, True))
+            for successor_id in reversed(sorted(graph[specification_id])):
+                if successor_id not in visited:
+                    stack.append((successor_id, False))
+
+    reverse_graph: dict[str, set[str]] = {
+        specification_id: set() for specification_id in graph
+    }
+    for predecessor_id in sorted(graph):
+        for successor_id in sorted(graph[predecessor_id]):
+            reverse_graph[successor_id].add(predecessor_id)
+
+    assigned: set[str] = set()
     components: list[tuple[str, ...]] = []
-
-    def visit(specification_id: str) -> None:
-        nonlocal index
-        indexes[specification_id] = index
-        lowlinks[specification_id] = index
-        index += 1
-        stack.append(specification_id)
-        on_stack.add(specification_id)
-
-        for successor_id in sorted(graph[specification_id]):
-            if successor_id not in indexes:
-                visit(successor_id)
-                lowlinks[specification_id] = min(
-                    lowlinks[specification_id], lowlinks[successor_id]
-                )
-            elif successor_id in on_stack:
-                lowlinks[specification_id] = min(
-                    lowlinks[specification_id], indexes[successor_id]
-                )
-
-        if lowlinks[specification_id] == indexes[specification_id]:
-            component: list[str] = []
-            while True:
-                member = stack.pop()
-                on_stack.remove(member)
-                component.append(member)
-                if member == specification_id:
-                    break
-            components.append(tuple(sorted(component)))
-
-    for specification_id in sorted(graph):
-        if specification_id not in indexes:
-            visit(specification_id)
+    for starting_id in reversed(finish_order):
+        if starting_id in assigned:
+            continue
+        component: list[str] = []
+        stack = [starting_id]
+        assigned.add(starting_id)
+        while stack:
+            specification_id = stack.pop()
+            component.append(specification_id)
+            for predecessor_id in reversed(sorted(reverse_graph[specification_id])):
+                if predecessor_id not in assigned:
+                    assigned.add(predecessor_id)
+                    stack.append(predecessor_id)
+        components.append(tuple(sorted(component)))
     for component in sorted(components):
         cyclic = len(component) > 1 or component[0] in graph[component[0]]
         if cyclic:
