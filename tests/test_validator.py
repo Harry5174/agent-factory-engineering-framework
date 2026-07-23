@@ -128,6 +128,22 @@ def decode_diagnostic(line: str) -> tuple[str, str, str, str]:
     )
 
 
+def assert_invalid_repository_path_result(
+    result: subprocess.CompletedProcess[str],
+) -> None:
+    assert result.returncode == 1
+    assert result.stderr == ""
+    result.stdout.encode("utf-8", errors="strict")
+    lines = result.stdout.splitlines()
+    assert lines
+    assert all(len(line.split("|")) == 4 for line in lines)
+    diagnostics = [decode_diagnostic(line) for line in lines]
+    assert any(fields[2] == "E_PATH_INVALID" for fields in diagnostics)
+    assert "E_INTERNAL" not in result.stdout
+    assert "Traceback" not in result.stdout
+    assert "UnicodeEncodeError" not in result.stdout
+
+
 @pytest.mark.parametrize(
     ("fixture", "expected_code"),
     [
@@ -323,6 +339,23 @@ def test_every_configured_manifest_path_is_containment_checked(
     documentation.unlink()
     contained_but_absent = run_validator(project)
     assert contained_but_absent.returncode == 0
+
+
+@pytest.mark.parametrize("declared", ["segment\x00name", "segment\ud800name"])
+def test_manifest_configured_path_rejects_invalid_text_as_conformance(
+    tmp_path: Path, declared: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    manifest = load_manifest(project)
+    manifest["paths"]["documentation"] = declared
+    write_manifest(project, manifest)
+
+    result = run_validator(project)
+
+    assert_invalid_repository_path_result(result)
+    assert result.stdout.count("E_PATH_INVALID") == 1
+    assert declared not in result.stdout
+    assert str(tmp_path) not in result.stdout
 
 
 def test_normative_manifest_symlink_escape_is_rejected(tmp_path: Path) -> None:
@@ -729,6 +762,49 @@ def test_record_affected_paths_reject_nul_as_conformance_failure(
     assert str(tmp_path) not in result.stdout
 
 
+@pytest.mark.parametrize("category", ["specification", "work-record"])
+@pytest.mark.parametrize(
+    "declared",
+    [
+        "segment\ud800name",
+        "segment\udc00name",
+        "segment\ud800\udc00name",
+    ],
+)
+def test_record_affected_paths_reject_surrogate_sequences_as_conformance(
+    tmp_path: Path, category: str, declared: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    if category == "specification":
+        record = load_specification(project)
+        record["affected_paths"] = [declared]
+        write_specification(project, "spec-0001.md", record)
+    else:
+        record = load_work_record(project)
+        record["authorization_envelope"]["affected_paths"] = [declared]
+        write_work_record(project, record)
+
+    result = run_validator(project)
+
+    assert_invalid_repository_path_result(result)
+    assert result.stdout.count("E_PATH_INVALID") == 1
+    assert declared not in result.stdout
+    assert str(tmp_path) not in result.stdout
+
+
+def test_valid_unicode_repository_relative_path_is_accepted(tmp_path: Path) -> None:
+    project = copy_fixture("valid", tmp_path)
+    record = load_specification(project)
+    record["affected_paths"] = ["src/naïve/文件.py"]
+    write_specification(project, "spec-0001.md", record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+    assert result.stderr == ""
+
+
 def test_valid_three_record_historical_chain(tmp_path: Path) -> None:
     project = copy_fixture("multiple-historical", tmp_path)
     second = load_specification(project, "spec-0002.md")
@@ -803,6 +879,58 @@ def test_long_supersession_cycle_exceeds_recursion_limit(tmp_path: Path) -> None
     assert result.stderr == ""
     assert "E_INTERNAL" not in result.stdout
     assert "Traceback" not in result.stdout
+
+
+def test_in_memory_supersession_scale_and_input_order_are_deterministic() -> None:
+    chain_length = 9000
+    chain: list[tuple[str, dict]] = []
+    for index in range(1, chain_length + 1):
+        specification_id = f"SPEC-{index:04d}"
+        successor_id = (
+            f"SPEC-{index + 1:04d}" if index < chain_length else None
+        )
+        predecessors = [f"SPEC-{index - 1:04d}"] if index > 1 else []
+        status = "superseded" if successor_id is not None else "active"
+        chain.append(
+            (
+                f".afef/specifications/spec-{index:04d}.md",
+                minimal_specification(
+                    specification_id,
+                    status,
+                    supersedes=predecessors,
+                    superseded_by=successor_id,
+                ),
+            )
+        )
+
+    assert validator._validate_specification_relationships(chain) == []
+    assert validator._validate_specification_relationships(list(reversed(chain))) == []
+
+    cycle_length = 4000
+    cycle: list[tuple[str, dict]] = []
+    for index in range(1, cycle_length + 1):
+        successor = (index % cycle_length) + 1
+        predecessor = ((index - 2) % cycle_length) + 1
+        cycle.append(
+            (
+                f".afef/specifications/spec-{index:04d}.md",
+                minimal_specification(
+                    f"SPEC-{index:04d}",
+                    "superseded",
+                    supersedes=[f"SPEC-{predecessor:04d}"],
+                    superseded_by=f"SPEC-{successor:04d}",
+                ),
+            )
+        )
+
+    forward = validator._validate_specification_relationships(cycle)
+    reversed_input = validator._validate_specification_relationships(
+        list(reversed(cycle))
+    )
+
+    assert forward == reversed_input
+    assert len(forward) == 1
+    assert forward[0].code == "E_SUPERSESSION_CYCLE"
 
 
 def test_active_predecessor_and_missing_supersession_references_are_rejected(

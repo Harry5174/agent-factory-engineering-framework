@@ -212,11 +212,13 @@ def _load_schemas() -> dict[str, dict[str, Any]]:
 
 
 def _is_repository_path(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and "\x00" not in value
-        and REPOSITORY_PATH_PATTERN.fullmatch(value) is not None
-    )
+    if not isinstance(value, str):
+        return False
+    try:
+        value.encode("utf-8", errors="strict")
+    except UnicodeEncodeError:
+        return False
+    return "\x00" not in value and REPOSITORY_PATH_PATTERN.fullmatch(value) is not None
 
 
 def _resolve_declared_path(
