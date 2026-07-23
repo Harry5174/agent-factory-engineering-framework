@@ -26,14 +26,21 @@ KIND|PROJECT_RELATIVE_PATH|CODE|DETAIL
 `KIND` is `CONFORMANCE` for invalid adopter content and `OPERATIONAL` for a
 validator failure. Paths always use project-relative `/` syntax; `.` identifies
 the supplied root and `-` identifies command usage. `CODE` is a stable
-machine-comparable identifier. `DETAIL` is a compact explanation.
+machine-comparable identifier. `DETAIL` is a compact explanation. Before joining
+the four fields with `|`, each field is UTF-8 percent-encoded using RFC 3986
+unreserved characters plus `/` as the only unescaped characters. Delimiters,
+percent signs, control characters, whitespace, and other characters are
+therefore unambiguous and cannot create extra fields or lines.
 
-Diagnostics are sorted byte-for-byte by `(project-relative path, code, detail,
-kind)`, which is the field order of the validator's immutable diagnostic record.
-Repeated runs against unchanged input therefore produce byte-identical output.
+Diagnostics are sorted by the unencoded tuple `(project-relative path, code,
+detail, kind)`, which is the field order of the validator's immutable diagnostic
+record, and then encoded. Repeated runs against unchanged input therefore
+produce byte-identical output.
 Conformance diagnostics are written to standard output. Usage and operational
-diagnostics are written to standard error. The validator emits no timestamps,
-random values, workstation-absolute paths, environment prefixes, or tracebacks.
+diagnostics are written to standard error. Usage failures emit only the stable
+detail `invalid command usage`; they do not echo supplied arguments. The
+validator emits no timestamps, random values, workstation-absolute paths,
+environment prefixes, or tracebacks.
 
 ## Exit Codes
 

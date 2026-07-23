@@ -10,6 +10,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
+from urllib.parse import quote
 
 import yaml
 from jsonschema import Draft202012Validator, FormatChecker
@@ -46,7 +47,8 @@ class Diagnostic:
     kind: str = "CONFORMANCE"
 
     def render(self) -> str:
-        return f"{self.kind}|{self.path}|{self.code}|{self.detail}"
+        fields = (self.kind, self.path, self.code, self.detail)
+        return "|".join(quote(field, safe="/") for field in fields)
 
 
 class DuplicateKeyError(yaml.YAMLError):
@@ -86,7 +88,7 @@ class UsageError(Exception):
 
 class StableArgumentParser(argparse.ArgumentParser):
     def error(self, message: str) -> None:
-        raise UsageError(message)
+        raise UsageError
 
 
 class OperationalFailure(Exception):
@@ -214,14 +216,14 @@ def _is_repository_path(value: Any) -> bool:
 
 
 def _resolve_declared_path(
-    root: Path, declared: Any, affected_path: str
+    root: Path, declared: Any, affected_path: str, field_name: str
 ) -> tuple[Path | None, list[Diagnostic]]:
     if not _is_repository_path(declared):
         return None, [
             Diagnostic(
                 affected_path,
                 "E_PATH_INVALID",
-                "path must use project-relative repository-style syntax",
+                f"{field_name} must use project-relative repository-style syntax",
             )
         ]
     candidate = root.joinpath(*PurePosixPath(declared).parts)
@@ -236,7 +238,7 @@ def _resolve_declared_path(
             Diagnostic(
                 affected_path,
                 "E_PATH_ESCAPE",
-                "path resolves outside the supplied project root",
+                f"{field_name} resolves outside the supplied project root",
             )
         ]
     return candidate, []
@@ -434,6 +436,8 @@ def _validate_actor_separation(path: str, record: dict[str, Any]) -> list[Diagno
     for review in record.get("reviews", []):
         if not isinstance(review, dict):
             continue
+        if review.get("status") != "completed":
+            continue
         reviewer = review.get("reviewer")
         reviewer_id = reviewer.get("actor_id") if isinstance(reviewer, dict) else None
         if reviewer_id == implementer_id:
@@ -619,7 +623,10 @@ def validate_project(project_root: Path) -> tuple[list[Diagnostic], bool]:
         constitution = manifest.get("constitution")
         if isinstance(constitution, dict) and "reference" in constitution:
             constitution_path, path_diagnostics = _resolve_declared_path(
-                root, constitution["reference"], MANIFEST_PATH
+                root,
+                constitution["reference"],
+                MANIFEST_PATH,
+                "constitution.reference",
             )
             diagnostics.extend(path_diagnostics)
             if constitution_path is not None and (
@@ -638,17 +645,29 @@ def validate_project(project_root: Path) -> tuple[list[Diagnostic], bool]:
             return sorted(diagnostics), False
 
         resolved_directories: dict[str, Path] = {}
-        for category, field in (
-            ("specification", "specifications"),
-            ("work-record", "work_records"),
-        ):
+        record_fields = {
+            "specifications": "specification",
+            "work_records": "work-record",
+        }
+        configured_path_fields = (
+            "architecture",
+            "decisions",
+            "documentation",
+            "evidence",
+            "source",
+            "specifications",
+            "tests",
+            "work_records",
+        )
+        for field in configured_path_fields:
             if field not in paths:
                 continue
             directory, path_diagnostics = _resolve_declared_path(
-                root, paths[field], MANIFEST_PATH
+                root, paths[field], MANIFEST_PATH, f"paths.{field}"
             )
             diagnostics.extend(path_diagnostics)
-            if directory is not None:
+            category = record_fields.get(field)
+            if category is not None and directory is not None:
                 resolved_directories[category] = directory
 
         if len(resolved_directories) == 2:
@@ -748,8 +767,13 @@ def _parser() -> StableArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     try:
         arguments = _parser().parse_args(argv)
-    except UsageError as error:
-        print(f"OPERATIONAL|-|E_USAGE|{error}", file=sys.stderr)
+    except UsageError:
+        print(
+            Diagnostic(
+                "-", "E_USAGE", "invalid command usage", kind="OPERATIONAL"
+            ).render(),
+            file=sys.stderr,
+        )
         return 2
 
     diagnostics, operational_failure = validate_project(arguments.project)

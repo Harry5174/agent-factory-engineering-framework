@@ -9,6 +9,7 @@ import socket
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 import pytest
 import yaml
@@ -66,6 +67,17 @@ def file_snapshot(root: Path) -> dict[str, str]:
         for path in sorted(root.rglob("*"))
         if path.is_file()
     }
+
+
+def decode_diagnostic(line: str) -> tuple[str, str, str, str]:
+    fields = line.split("|")
+    assert len(fields) == 4
+    return (
+        unquote(fields[0]),
+        unquote(fields[1]),
+        unquote(fields[2]),
+        unquote(fields[3]),
+    )
 
 
 @pytest.mark.parametrize(
@@ -178,7 +190,7 @@ def test_manifest_discovery_is_normative_nonrecursive_and_not_configurable() -> 
     assert result.returncode == 1
     assert result.stdout.splitlines() == [
         "CONFORMANCE|.afef/project-manifest.yaml|E_MANIFEST_MISSING|"
-        "normative project manifest is missing"
+        "normative%20project%20manifest%20is%20missing"
     ]
     assert unsupported_option.returncode == 2
     assert unsupported_option.stderr.startswith("OPERATIONAL|-|E_USAGE|")
@@ -222,6 +234,35 @@ def test_symlink_escape_is_rejected(tmp_path: Path) -> None:
     assert result.returncode == 1
     assert "E_PATH_ESCAPE" in result.stdout
     assert str(tmp_path) not in result.stdout
+
+
+def test_every_configured_manifest_path_is_containment_checked(
+    tmp_path: Path,
+) -> None:
+    project = copy_fixture("valid", tmp_path / "project")
+    outside = tmp_path / "outside-documentation"
+    outside.mkdir()
+    documentation = project / "documentation"
+    documentation.symlink_to(outside, target_is_directory=True)
+    manifest = load_manifest(project)
+    manifest["paths"]["documentation"] = "documentation"
+    write_manifest(project, manifest)
+
+    escaping = run_validator(project)
+
+    assert escaping.returncode == 1
+    diagnostics = [decode_diagnostic(line) for line in escaping.stdout.splitlines()]
+    assert (
+        "CONFORMANCE",
+        ".afef/project-manifest.yaml",
+        "E_PATH_ESCAPE",
+        "paths.documentation resolves outside the supplied project root",
+    ) in diagnostics
+    assert str(tmp_path) not in escaping.stdout
+
+    documentation.unlink()
+    contained_but_absent = run_validator(project)
+    assert contained_but_absent.returncode == 0
 
 
 def test_normative_manifest_symlink_escape_is_rejected(tmp_path: Path) -> None:
@@ -342,6 +383,28 @@ def test_work_references_authorization_keys_and_actor_separation() -> None:
     assert multiple.stdout.count("E_ACTOR_SEPARATION") == 2
 
 
+def test_pending_reviewer_may_share_implementer_actor_id(tmp_path: Path) -> None:
+    project = copy_fixture("valid", tmp_path)
+    work_path = project / ".afef" / "work-records" / "work-0001.yaml"
+    work = yaml.safe_load(work_path.read_text(encoding="utf-8"))
+    work["reviews"] = [
+        {
+            "review_id": "REVIEW-PENDING",
+            "status": "pending",
+            "reviewer": {
+                "actor_id": "fixture-implementer",
+                "role": "implementation_supervisor",
+            },
+        }
+    ]
+    work_path.write_text(yaml.safe_dump(work, sort_keys=False), encoding="utf-8")
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
 def test_authorization_id_uniqueness_and_independent_reviewer_separation(
     tmp_path: Path,
 ) -> None:
@@ -376,7 +439,10 @@ def test_authorization_id_uniqueness_and_independent_reviewer_separation(
 
     assert result.returncode == 1
     assert "E_AUTHORIZATION_ID" in result.stdout
-    assert "independent reviewer actor_id equals implementer actor_id" in result.stdout
+    assert (
+        "independent reviewer actor_id equals implementer actor_id"
+        in unquote(result.stdout)
+    )
 
 
 def test_manifest_afef_pins_obey_accepted_schema_formats(tmp_path: Path) -> None:
@@ -409,15 +475,30 @@ def test_diagnostics_are_sorted_and_repeated_output_is_byte_identical() -> None:
     assert first.returncode == second.returncode == 1
     assert first.stdout.encode() == second.stdout.encode()
     assert first.stderr.encode() == second.stderr.encode()
-    assert lines == sorted(
-        lines,
-        key=lambda line: (
-            line.split("|", 3)[1],
-            line.split("|", 3)[2],
-            line.split("|", 3)[3],
-            line.split("|", 3)[0],
-        ),
+    decoded = [decode_diagnostic(line) for line in lines]
+    assert decoded == sorted(
+        decoded,
+        key=lambda fields: (fields[1], fields[2], fields[3], fields[0]),
     )
+
+
+def test_diagnostic_fields_are_unambiguous_when_paths_contain_delimiters(
+    tmp_path: Path,
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    manifest = load_manifest(project)
+    manifest["paths"]["specifications"] = ".afef/spec|ifications"
+    write_manifest(project, manifest)
+    (project / ".afef" / "spec|ifications").mkdir()
+
+    result = run_validator(project)
+    lines = result.stdout.splitlines()
+    decoded = [decode_diagnostic(line) for line in lines]
+
+    assert result.returncode == 1
+    assert all(len(line.split("|")) == 4 for line in lines)
+    assert "%7C" in result.stdout
+    assert any(fields[1] == ".afef/spec|ifications" for fields in decoded)
 
 
 def test_exit_codes_and_no_traceback_for_expected_invalid_input() -> None:
@@ -434,8 +515,26 @@ def test_exit_codes_and_no_traceback_for_expected_invalid_input() -> None:
     assert valid.returncode == 0
     assert invalid.returncode == 1
     assert usage.returncode == 2
-    assert usage.stderr.startswith("OPERATIONAL|-|E_USAGE|")
+    assert usage.stderr == "OPERATIONAL|-|E_USAGE|invalid%20command%20usage\n"
     assert "Traceback" not in invalid.stdout + invalid.stderr + usage.stderr
+
+
+def test_usage_diagnostics_do_not_echo_arguments_or_control_characters() -> None:
+    hostile_argument = "/home/fictional/private\n|environment-dependent"
+    usage = subprocess.run(
+        [sys.executable, str(VALIDATOR_PATH), "--unknown", hostile_argument],
+        cwd=REPOSITORY_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert usage.returncode == 2
+    assert usage.stdout == ""
+    assert usage.stderr == "OPERATIONAL|-|E_USAGE|invalid%20command%20usage\n"
+    assert hostile_argument not in usage.stderr
+    assert len(usage.stderr.splitlines()) == 1
+    assert len(usage.stderr.rstrip("\n").split("|")) == 4
 
 
 def test_operational_failure_uses_exit_two_without_traceback(
@@ -452,7 +551,7 @@ def test_operational_failure_uses_exit_two_without_traceback(
     assert result == 2
     assert captured.out == ""
     assert captured.err == (
-        "OPERATIONAL|.|E_OPERATIONAL|fictional schema read failure\n"
+        "OPERATIONAL|.|E_OPERATIONAL|fictional%20schema%20read%20failure\n"
     )
     assert "Traceback" not in captured.err
 
@@ -484,14 +583,21 @@ def test_documented_command_line_invocation() -> None:
         encoding="utf-8"
     )
     result = subprocess.run(
-        ["python", "tools/validate_afef.py", "--project", "tests/fixtures/valid"],
+        [
+            sys.executable,
+            "tools/validate_afef.py",
+            "--project",
+            "tests/fixtures/valid",
+        ],
         cwd=REPOSITORY_ROOT,
         text=True,
         capture_output=True,
         check=False,
+        env={**os.environ, "PATH": ""},
     )
 
     assert "python tools/validate_afef.py --project <adopter-project-root>" in documentation
+    assert Path(sys.executable).is_absolute()
     assert result.returncode == 0
     assert result.stdout == ""
     assert result.stderr == ""
