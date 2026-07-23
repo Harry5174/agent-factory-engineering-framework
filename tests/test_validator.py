@@ -61,6 +61,54 @@ def write_manifest(project: Path, manifest: dict) -> None:
     path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
 
 
+def load_work_record(project: Path, name: str = "work-0001.yaml") -> dict:
+    path = project / ".afef" / "work-records" / name
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def write_work_record(
+    project: Path, record: dict, name: str = "work-0001.yaml"
+) -> None:
+    path = project / ".afef" / "work-records" / name
+    path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
+
+
+def load_specification(project: Path, name: str = "spec-0001.md") -> dict:
+    path = project / ".afef" / "specifications" / name
+    front_matter = path.read_text(encoding="utf-8").split("---", 2)[1]
+    return yaml.safe_load(front_matter)
+
+
+def write_specification(project: Path, name: str, record: dict) -> None:
+    path = project / ".afef" / "specifications" / name
+    text = f"---\n{yaml.safe_dump(record, sort_keys=False)}---\n\n# Fictional specification\n"
+    path.write_text(text, encoding="utf-8")
+
+
+def minimal_specification(
+    specification_id: str,
+    status: str = "active",
+    *,
+    supersedes: list[str] | None = None,
+    superseded_by: str | None = None,
+) -> dict:
+    record = {
+        "schema_version": "0.2.0",
+        "specification_id": specification_id,
+        "title": f"Fictional {specification_id}",
+        "owner": "fixture-owner",
+        "specification_status": status,
+        "delivery_status": "not_started",
+        "supersedes": supersedes or [],
+        "acceptance_criteria": [
+            {"id": "AC-0001", "description": "The fictional relationship validates."}
+        ],
+    }
+    if superseded_by is not None:
+        record["superseded_by"] = superseded_by
+    return record
+
+
 def file_snapshot(root: Path) -> dict[str, str]:
     return {
         path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
@@ -117,6 +165,18 @@ def test_all_three_schemas_are_draft_2020_12_valid() -> None:
         schema = json.loads(path.read_text(encoding="utf-8"))
         assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
         Draft202012Validator.check_schema(schema)
+
+
+def test_repository_path_schema_contract_is_harmonized() -> None:
+    schemas = [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted(SCHEMAS.glob("*.schema.json"))
+    ]
+    patterns = {
+        schema["$defs"]["repositoryPath"]["pattern"] for schema in schemas
+    }
+
+    assert patterns == {validator.REPOSITORY_PATH_PATTERN.pattern}
 
 
 def test_schema_invalid_fixtures_report_expected_category() -> None:
@@ -457,6 +517,312 @@ def test_manifest_afef_pins_obey_accepted_schema_formats(tmp_path: Path) -> None
     assert result.returncode == 1
     assert "E_SCHEMA_MINLENGTH" in result.stdout
     assert "E_SCHEMA_PATTERN" in result.stdout
+
+
+@pytest.mark.parametrize(
+    "effect_class",
+    [
+        "local-destructive",
+        "external-write",
+        "external-destructive",
+        "identity-permission-change",
+        "publication-release",
+    ],
+)
+@pytest.mark.parametrize("risk_profile", ["lean", "standard"])
+def test_permitted_protected_operations_require_high_assurance(
+    tmp_path: Path, effect_class: str, risk_profile: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    work = load_work_record(project)
+    work["risk_profile"] = risk_profile
+    work["authorization_envelope"]["operations"] = [
+        {
+            "operation_id": "OP-PROTECTED",
+            "effect_class": effect_class,
+            "decision": "permitted",
+            "authorization_requirement": "separate_reference",
+        }
+    ]
+    work["authorization_envelope"]["authorization_references"] = [
+        {
+            "authorization_id": "AUTH-PROTECTED",
+            "reference": "evidence/fictional-authorization.md",
+            "operation_ids": ["OP-PROTECTED"],
+        }
+    ]
+    write_work_record(project, work)
+
+    first = run_validator(project)
+    second = run_validator(project)
+
+    assert first.returncode == second.returncode == 1
+    assert first.stdout == second.stdout
+    assert first.stderr == second.stderr == ""
+    assert first.stdout.count("E_RISK_PROFILE_ESCALATION") == 1
+    assert "E_AUTHORIZATION_BINDING" not in first.stdout
+
+
+def test_prohibited_protected_operation_does_not_force_escalation(
+    tmp_path: Path,
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    work = load_work_record(project)
+    work["authorization_envelope"]["operations"] = [
+        {
+            "operation_id": "OP-PROHIBITED",
+            "effect_class": "external-destructive",
+            "decision": "prohibited",
+            "authorization_requirement": "not_applicable",
+        }
+    ]
+    write_work_record(project, work)
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_high_assurance_protected_operation_still_requires_exact_binding(
+    tmp_path: Path,
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    work = load_work_record(project)
+    work["risk_profile"] = "high_assurance"
+    work["independent_review"] = {"status": "pending"}
+    work["authorization_envelope"]["operations"] = [
+        {
+            "operation_id": "OP-PROTECTED",
+            "effect_class": "external-write",
+            "decision": "permitted",
+            "authorization_requirement": "separate_reference",
+        }
+    ]
+    work["authorization_envelope"]["authorization_references"] = [
+        {
+            "authorization_id": "AUTH-PROTECTED",
+            "reference": "evidence/fictional-authorization.md",
+            "operation_ids": ["OP-PROTECTED"],
+        }
+    ]
+    write_work_record(project, work)
+
+    conforming = run_validator(project)
+    del work["authorization_envelope"]["authorization_references"]
+    write_work_record(project, work)
+    unbound = run_validator(project)
+
+    assert conforming.returncode == 0
+    assert unbound.returncode == 1
+    assert "E_AUTHORIZATION_BINDING" in unbound.stdout
+    assert "E_RISK_PROFILE_ESCALATION" not in unbound.stdout
+
+
+@pytest.mark.parametrize("category", ["specification", "work-record"])
+@pytest.mark.parametrize(
+    "declared",
+    [
+        "../outside",
+        "/absolute/path",
+        "C:/drive-qualified",
+        "~/home-relative",
+        "backslash\\path",
+    ],
+)
+def test_record_affected_paths_require_repository_style_syntax(
+    tmp_path: Path, category: str, declared: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    if category == "specification":
+        record = load_specification(project)
+        record["affected_paths"] = [declared]
+        write_specification(project, "spec-0001.md", record)
+    else:
+        record = load_work_record(project)
+        record["authorization_envelope"]["affected_paths"] = [declared]
+        write_work_record(project, record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 1
+    assert "E_PATH_INVALID" in result.stdout
+    assert result.stderr == ""
+    assert str(tmp_path) not in result.stdout
+
+
+@pytest.mark.parametrize("category", ["specification", "work-record"])
+@pytest.mark.parametrize("escape_kind", ["direct", "intermediate"])
+def test_record_affected_path_symlink_escapes_are_rejected(
+    tmp_path: Path, category: str, escape_kind: str
+) -> None:
+    project = copy_fixture("valid", tmp_path / "project")
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    if escape_kind == "direct":
+        (project / "linked").symlink_to(outside, target_is_directory=True)
+        declared = "linked"
+    else:
+        (project / "links").symlink_to(outside, target_is_directory=True)
+        declared = "links/absent-child"
+    if category == "specification":
+        record = load_specification(project)
+        record["affected_paths"] = [declared]
+        write_specification(project, "spec-0001.md", record)
+    else:
+        record = load_work_record(project)
+        record["authorization_envelope"]["affected_paths"] = [declared]
+        write_work_record(project, record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 1
+    assert "E_PATH_ESCAPE" in result.stdout
+    assert result.stderr == ""
+    assert str(tmp_path) not in result.stdout
+
+
+@pytest.mark.parametrize("category", ["specification", "work-record"])
+def test_record_affected_paths_may_be_contained_and_absent(
+    tmp_path: Path, category: str
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    (project / "src").mkdir()
+    declared = ["src", "src/fictional-absent.py"]
+    if category == "specification":
+        record = load_specification(project)
+        record["affected_paths"] = declared
+        write_specification(project, "spec-0001.md", record)
+    else:
+        record = load_work_record(project)
+        record["authorization_envelope"]["affected_paths"] = declared
+        write_work_record(project, record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_valid_three_record_historical_chain(tmp_path: Path) -> None:
+    project = copy_fixture("multiple-historical", tmp_path)
+    second = load_specification(project, "spec-0002.md")
+    second["specification_status"] = "superseded"
+    second["superseded_by"] = "SPEC-0003"
+    write_specification(project, "spec-0002.md", second)
+    write_specification(
+        project,
+        "spec-0003.md",
+        minimal_specification("SPEC-0003", supersedes=["SPEC-0002"]),
+    )
+
+    result = run_validator(project)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_active_predecessor_and_missing_supersession_references_are_rejected(
+    tmp_path: Path,
+) -> None:
+    active_project = copy_fixture("multiple-historical", tmp_path / "active")
+    predecessor = load_specification(active_project)
+    predecessor["specification_status"] = "active"
+    write_specification(active_project, "spec-0001.md", predecessor)
+    active = run_validator(active_project)
+
+    missing_predecessor = copy_fixture("valid", tmp_path / "missing-predecessor")
+    successor = load_specification(missing_predecessor)
+    successor["supersedes"] = ["SPEC-9999"]
+    write_specification(missing_predecessor, "spec-0001.md", successor)
+    missing_previous = run_validator(missing_predecessor)
+
+    missing_successor = copy_fixture("valid", tmp_path / "missing-successor")
+    record = load_specification(missing_successor)
+    record["specification_status"] = "superseded"
+    record["superseded_by"] = "SPEC-9999"
+    write_specification(missing_successor, "spec-0001.md", record)
+    missing_next = run_validator(missing_successor)
+
+    assert active.returncode == 1
+    assert "predecessor%20%27SPEC-0001%27%20must%20have%20status" in active.stdout
+    assert missing_previous.returncode == 1
+    assert "supersedes%20references%20unknown" in missing_previous.stdout
+    assert missing_next.returncode == 1
+    assert "superseded_by%20references%20unknown" in missing_next.stdout
+
+
+@pytest.mark.parametrize("field", ["supersedes", "superseded_by"])
+def test_self_supersession_is_rejected(tmp_path: Path, field: str) -> None:
+    project = copy_fixture("valid", tmp_path)
+    record = load_specification(project)
+    record["specification_status"] = "superseded"
+    if field == "supersedes":
+        record["supersedes"] = ["SPEC-0001"]
+    else:
+        record["superseded_by"] = "SPEC-0001"
+    write_specification(project, "spec-0001.md", record)
+
+    result = run_validator(project)
+
+    assert result.returncode == 1
+    assert result.stdout.count("E_SUPERSESSION_CYCLE") == 1
+
+
+@pytest.mark.parametrize("cycle_size", [2, 3])
+def test_supersession_cycles_have_one_deterministic_diagnostic(
+    tmp_path: Path, cycle_size: int
+) -> None:
+    project = copy_fixture("valid", tmp_path)
+    specification_directory = project / ".afef" / "specifications"
+    (specification_directory / "spec-0001.md").unlink()
+    for index in range(1, cycle_size + 1):
+        current = f"SPEC-{index:04d}"
+        successor = f"SPEC-{(index % cycle_size) + 1:04d}"
+        predecessor = f"SPEC-{((index - 2) % cycle_size) + 1:04d}"
+        write_specification(
+            project,
+            f"spec-{index:04d}.md",
+            minimal_specification(
+                current,
+                "superseded",
+                supersedes=[predecessor],
+                superseded_by=successor,
+            ),
+        )
+
+    first = run_validator(project)
+    second = run_validator(project)
+
+    assert first.returncode == second.returncode == 1
+    assert first.stdout == second.stdout
+    assert first.stderr == second.stderr == ""
+    assert first.stdout.count("E_SUPERSESSION_CYCLE") == 1
+
+
+def test_supersession_reciprocity_and_predecessor_status_are_enforced(
+    tmp_path: Path,
+) -> None:
+    missing_reciprocal = copy_fixture(
+        "multiple-historical", tmp_path / "missing-reciprocal"
+    )
+    successor = load_specification(missing_reciprocal, "spec-0002.md")
+    successor["supersedes"] = []
+    write_specification(missing_reciprocal, "spec-0002.md", successor)
+    reciprocal = run_validator(missing_reciprocal)
+
+    predecessor_not_superseded = copy_fixture(
+        "multiple-historical", tmp_path / "predecessor-status"
+    )
+    predecessor = load_specification(predecessor_not_superseded, "spec-0001.md")
+    predecessor["specification_status"] = "retired"
+    write_specification(predecessor_not_superseded, "spec-0001.md", predecessor)
+    status = run_validator(predecessor_not_superseded)
+
+    assert reciprocal.returncode == 1
+    assert "does%20not%20reciprocally%20name" in reciprocal.stdout
+    assert status.returncode == 1
+    assert "must%20have%20status%20%27superseded%27" in status.stdout
 
 
 def test_multiple_historical_and_concurrent_active_records_are_accepted() -> None:

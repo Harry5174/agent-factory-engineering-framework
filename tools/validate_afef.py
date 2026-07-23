@@ -341,19 +341,20 @@ def _validate_specification_relationships(
         for path, record in specifications
         if isinstance(record.get("specification_id"), str)
     }
+    graph: dict[str, set[str]] = {
+        specification_id: set() for specification_id in sorted(by_id)
+    }
     for path, record in specifications:
         current_id = record.get("specification_id")
-        for field in ("dependencies", "supersedes"):
-            values = record.get(field, [])
-            if not isinstance(values, list):
-                continue
-            for referenced_id in values:
+        dependencies = record.get("dependencies", [])
+        if isinstance(dependencies, list):
+            for referenced_id in dependencies:
                 if isinstance(referenced_id, str) and referenced_id not in by_id:
                     diagnostics.append(
                         Diagnostic(
                             path,
                             "E_SPECIFICATION_REFERENCE",
-                            f"{field} references unknown specification {referenced_id!r}",
+                            f"dependencies references unknown specification {referenced_id!r}",
                         )
                     )
         successor_id = record.get("superseded_by")
@@ -363,6 +364,23 @@ def _validate_specification_relationships(
                     path,
                     "E_SPECIFICATION_REFERENCE",
                     f"superseded_by references unknown specification {successor_id!r}",
+                )
+            )
+        if (
+            isinstance(successor_id, str)
+            and isinstance(current_id, str)
+            and successor_id in by_id
+        ):
+            graph[current_id].add(successor_id)
+        if (
+            isinstance(successor_id, str)
+            and record.get("specification_status") != "superseded"
+        ):
+            diagnostics.append(
+                Diagnostic(
+                    path,
+                    "E_SUPERSESSION",
+                    "a specification naming superseded_by must have status 'superseded'",
                 )
             )
         if record.get("specification_status") == "superseded" and not successor_id:
@@ -387,16 +405,87 @@ def _validate_specification_relationships(
         if not isinstance(predecessors, list):
             continue
         for predecessor_id in predecessors:
-            if isinstance(predecessor_id, str) and predecessor_id in by_id:
-                predecessor = by_id[predecessor_id][1]
-                if predecessor.get("superseded_by") != current_id:
-                    diagnostics.append(
-                        Diagnostic(
-                            path,
-                            "E_SUPERSESSION",
-                            f"{predecessor_id!r} does not reciprocally name {current_id!r}",
-                        )
+            if not isinstance(predecessor_id, str):
+                continue
+            if predecessor_id not in by_id:
+                diagnostics.append(
+                    Diagnostic(
+                        path,
+                        "E_SPECIFICATION_REFERENCE",
+                        f"supersedes references unknown specification {predecessor_id!r}",
                     )
+                )
+                continue
+            if isinstance(current_id, str):
+                graph[predecessor_id].add(current_id)
+            predecessor = by_id[predecessor_id][1]
+            if predecessor.get("specification_status") != "superseded":
+                diagnostics.append(
+                    Diagnostic(
+                        path,
+                        "E_SUPERSESSION",
+                        f"predecessor {predecessor_id!r} must have status 'superseded'",
+                    )
+                )
+            if predecessor.get("superseded_by") != current_id:
+                diagnostics.append(
+                    Diagnostic(
+                        path,
+                        "E_SUPERSESSION",
+                        f"{predecessor_id!r} does not reciprocally name {current_id!r}",
+                    )
+                )
+
+    index = 0
+    stack: list[str] = []
+    on_stack: set[str] = set()
+    indexes: dict[str, int] = {}
+    lowlinks: dict[str, int] = {}
+    components: list[tuple[str, ...]] = []
+
+    def visit(specification_id: str) -> None:
+        nonlocal index
+        indexes[specification_id] = index
+        lowlinks[specification_id] = index
+        index += 1
+        stack.append(specification_id)
+        on_stack.add(specification_id)
+
+        for successor_id in sorted(graph[specification_id]):
+            if successor_id not in indexes:
+                visit(successor_id)
+                lowlinks[specification_id] = min(
+                    lowlinks[specification_id], lowlinks[successor_id]
+                )
+            elif successor_id in on_stack:
+                lowlinks[specification_id] = min(
+                    lowlinks[specification_id], indexes[successor_id]
+                )
+
+        if lowlinks[specification_id] == indexes[specification_id]:
+            component: list[str] = []
+            while True:
+                member = stack.pop()
+                on_stack.remove(member)
+                component.append(member)
+                if member == specification_id:
+                    break
+            components.append(tuple(sorted(component)))
+
+    for specification_id in sorted(graph):
+        if specification_id not in indexes:
+            visit(specification_id)
+    for component in sorted(components):
+        cyclic = len(component) > 1 or component[0] in graph[component[0]]
+        if cyclic:
+            path = by_id[component[0]][0]
+            diagnostics.append(
+                Diagnostic(
+                    path,
+                    "E_SUPERSESSION_CYCLE",
+                    f"supersession cycle contains {list(component)!r}",
+                )
+            )
     return diagnostics
 
 
@@ -462,6 +551,19 @@ def _validate_authorization(path: str, record: dict[str, Any]) -> list[Diagnosti
         return []
 
     diagnostics: list[Diagnostic] = []
+    if record.get("risk_profile") != "high_assurance" and any(
+        isinstance(operation, dict)
+        and operation.get("decision") == "permitted"
+        and operation.get("effect_class") in PROTECTED_EFFECT_CLASSES
+        for operation in operations
+    ):
+        diagnostics.append(
+            Diagnostic(
+                path,
+                "E_RISK_PROFILE_ESCALATION",
+                "permitted protected operations require risk_profile 'high_assurance'",
+            )
+        )
     operation_ids: dict[Any, list[dict[str, Any]]] = {}
     for operation in operations:
         operation_id = operation.get("operation_id") if isinstance(operation, dict) else None
@@ -563,6 +665,26 @@ def _validate_work_relationships(
                     )
         diagnostics.extend(_validate_authorization(path, record))
         diagnostics.extend(_validate_actor_separation(path, record))
+    return diagnostics
+
+
+def _validate_affected_paths(
+    root: Path,
+    record_path: str,
+    values: Any,
+    field_name: str,
+) -> list[Diagnostic]:
+    if not isinstance(values, list):
+        return []
+    diagnostics: list[Diagnostic] = []
+    for index, declared in enumerate(values):
+        _, path_diagnostics = _resolve_declared_path(
+            root,
+            declared,
+            record_path,
+            f"{field_name}[{index}]",
+        )
+        diagnostics.extend(path_diagnostics)
     return diagnostics
 
 
@@ -727,6 +849,26 @@ def validate_project(project_root: Path) -> tuple[list[Diagnostic], bool]:
             )
         )
         diagnostics.extend(_duplicates(work_records, "work_id", "E_DUPLICATE_WORK_ID"))
+        for path, record in specifications:
+            diagnostics.extend(
+                _validate_affected_paths(
+                    root,
+                    path,
+                    record.get("affected_paths", []),
+                    "affected_paths",
+                )
+            )
+        for path, record in work_records:
+            envelope = record.get("authorization_envelope")
+            if isinstance(envelope, dict):
+                diagnostics.extend(
+                    _validate_affected_paths(
+                        root,
+                        path,
+                        envelope.get("affected_paths", []),
+                        "authorization_envelope.affected_paths",
+                    )
+                )
         diagnostics.extend(_validate_specification_relationships(specifications))
         specification_ids = {
             record["specification_id"]

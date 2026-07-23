@@ -15,6 +15,14 @@ alternate manifest. The manifest supplies the non-recursive specification and
 work-record directories. Validation performs no network access and makes no
 writes to the adopter project or this repository.
 
+Configured manifest paths, constitution references, specification
+`affected_paths`, and work-record authorization-envelope `affected_paths` must
+use repository-style project-relative syntax and resolve within the supplied
+project root. Affected paths need not exist. Permitted protected-effect
+operations require a `high_assurance` risk profile as well as any exact
+authorization binding. Specification supersession references must exist, be
+reciprocal, mark predecessors as `superseded`, and form an acyclic graph.
+
 ## Diagnostics
 
 Every diagnostic is one UTF-8 line:
