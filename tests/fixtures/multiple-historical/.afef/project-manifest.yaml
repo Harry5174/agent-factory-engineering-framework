@@ -1,0 +1,15 @@
+schema_version: "0.2.0"
+project:
+  id: multiple-historical
+  name: Multiple Historical Records Fixture
+repository:
+  identity: example.invalid/fictional/history
+afef:
+  version: "0.2.0"
+  commit: "7777777777777777777777777777777777777777"
+constitution:
+  inline:
+    - Preserve fictional historical records.
+paths:
+  specifications: ".afef/specifications"
+  work_records: ".afef/work-records"

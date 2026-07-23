@@ -1,0 +1,46 @@
+schema_version: "0.2.0"
+work_id: "WORK-MULTIPLE"
+related_specifications:
+  - "SPEC-0001"
+risk_profile: standard
+scope:
+  in_scope:
+    - Exercise deterministic cross-record diagnostics.
+  out_of_scope:
+    - External changes.
+authorization_envelope:
+  operations:
+    - operation_id: "OP-WRITE"
+      effect_class: external-write
+      decision: permitted
+      authorization_requirement: separate_reference
+    - operation_id: "OP-WRITE"
+      effect_class: external-write
+      decision: prohibited
+      authorization_requirement: not_applicable
+  authorization_references:
+    - authorization_id: "AUTH-UNKNOWN"
+      reference: "fictional-authorization"
+      operation_ids:
+        - "OP-UNKNOWN"
+implementation_state: in_progress
+implementer:
+  actor_id: shared-fixture-actor
+  role: ide_agent
+reviews:
+  - review_id: "REVIEW-1"
+    status: completed
+    reviewer:
+      actor_id: shared-fixture-actor
+      role: implementation_supervisor
+    recommendation: accept
+    evidence_reference: "evidence/fictional.txt"
+final_gate:
+  status: accepted
+  owner:
+    actor_id: shared-fixture-actor
+    role: design_supervisor
+  recorded_at: "2026-01-01T00:00:00Z"
+human_checkpoint:
+  status: completed
+  next_required_action: Correct the fixture.

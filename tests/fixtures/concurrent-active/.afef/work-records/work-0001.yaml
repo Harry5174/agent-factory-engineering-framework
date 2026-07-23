@@ -1,0 +1,26 @@
+schema_version: "0.2.0"
+work_id: "WORK-CONCURRENT-1"
+related_specifications:
+  - "SPEC-0001"
+risk_profile: lean
+scope:
+  in_scope:
+    - Deliver fictional feature one.
+  out_of_scope:
+    - Fictional feature two.
+authorization_envelope:
+  operations:
+    - operation_id: "OP-LOCAL-1"
+      effect_class: local-reversible-write
+      decision: permitted
+      authorization_requirement: bounded_work_envelope
+implementation_state: in_progress
+implementer:
+  actor_id: fixture-implementer-one
+  role: ide_agent
+reviews: []
+final_gate:
+  status: not_issued
+human_checkpoint:
+  status: awaiting
+  next_required_action: Review feature one independently.

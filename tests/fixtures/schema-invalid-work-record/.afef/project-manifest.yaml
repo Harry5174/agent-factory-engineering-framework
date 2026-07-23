@@ -1,0 +1,15 @@
+schema_version: "0.2.0"
+project:
+  id: invalid-work
+  name: Invalid Work Record Fixture
+repository:
+  identity: example.invalid/fictional/invalid-work
+afef:
+  version: "0.2.0"
+  commit: "3333333333333333333333333333333333333333"
+constitution:
+  inline:
+    - Use fictional fixture data.
+paths:
+  specifications: ".afef/specifications"
+  work_records: ".afef/work-records"

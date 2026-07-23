@@ -47,6 +47,7 @@ release, validation, or adoption.
 
 ### Unreleased v0.2.0 Candidate Contracts and Templates
 
+- [Deterministic adopter validation](validation.md)
 - [`project-manifest.schema.json`](../schemas/v0.2/project-manifest.schema.json)
   and [project manifest template](templates/project-manifest-template.yaml)
 - [`specification.schema.json`](../schemas/v0.2/specification.schema.json)

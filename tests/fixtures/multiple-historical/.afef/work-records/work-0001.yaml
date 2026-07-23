@@ -1,0 +1,23 @@
+schema_version: "0.2.0"
+work_id: "WORK-HISTORICAL-1"
+related_specifications:
+  - "SPEC-0001"
+risk_profile: lean
+scope:
+  in_scope:
+    - Preserve the original fictional delivery record.
+  out_of_scope:
+    - External changes.
+authorization_envelope:
+  operations:
+    - operation_id: "OP-READ-1"
+      effect_class: local-read
+      decision: permitted
+      authorization_requirement: bounded_work_envelope
+implementation_state: deferred
+reviews: []
+final_gate:
+  status: not_issued
+human_checkpoint:
+  status: completed
+  next_required_action: Preserve historical provenance.

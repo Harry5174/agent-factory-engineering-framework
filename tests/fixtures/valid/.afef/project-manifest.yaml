@@ -1,0 +1,17 @@
+schema_version: "0.2.0"
+project:
+  id: fictional-valid
+  name: Fictional Valid Project
+repository:
+  identity: example.invalid/fictional/valid
+  default_branch: main
+afef:
+  version: "0.2.0"
+  commit: "1111111111111111111111111111111111111111"
+constitution:
+  inline:
+    - Keep fictional fixture data local.
+paths:
+  specifications: ".afef/specifications"
+  work_records: ".afef/work-records"
+default_risk_profile: lean

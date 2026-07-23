@@ -1,0 +1,15 @@
+schema_version: "0.2.0"
+project:
+  id: missing-directory
+  name: Missing Record Directory Fixture
+repository:
+  identity: example.invalid/fictional/missing-directory
+afef:
+  version: "0.2.0"
+  commit: "5555555555555555555555555555555555555555"
+constitution:
+  inline:
+    - Require declared record directories.
+paths:
+  specifications: ".afef/specifications"
+  work_records: ".afef/work-records"
