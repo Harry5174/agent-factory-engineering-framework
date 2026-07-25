@@ -1155,25 +1155,28 @@ def test_validation_performs_no_network_access(monkeypatch: pytest.MonkeyPatch) 
     assert operational is False
 
 
-def test_documented_command_line_invocation() -> None:
+def test_documented_command_line_invocation(tmp_path: Path) -> None:
     documentation = (REPOSITORY_ROOT / "docs" / "validation.md").read_text(
         encoding="utf-8"
     )
     result = subprocess.run(
         [
             sys.executable,
-            "tools/validate_afef.py",
+            str(VALIDATOR_PATH),
             "--project",
-            "tests/fixtures/valid",
+            str((FIXTURES / "valid").resolve()),
         ],
-        cwd=REPOSITORY_ROOT,
+        cwd=tmp_path,
         text=True,
         capture_output=True,
         check=False,
-        env={**os.environ, "PATH": ""},
+        env={"PYTHONDONTWRITEBYTECODE": "1"},
     )
 
-    assert "python tools/validate_afef.py --project <adopter-project-root>" in documentation
+    assert (
+        "<ABSOLUTE_PYTHON> <ABSOLUTE_AFEF_ROOT>/tools/validate_afef.py"
+        in documentation
+    )
     assert Path(sys.executable).is_absolute()
     assert result.returncode == 0
     assert result.stdout == ""

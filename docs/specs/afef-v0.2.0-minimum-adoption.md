@@ -16,10 +16,11 @@ conduct bounded discovery, record its constitution, approve authoritative intent
 authorize implementation in proportion to risk, and preserve implementation
 evidence and a final gate.
 
-This candidate defines documentation contracts only. It does not provide a
-runtime, CLI, generator, validator, automated policy enforcement, CI integration,
-or an adoption fixture. Adoption initializes governance; it does not initialize
-product technology.
+This candidate defines documentation contracts and includes a narrow offline
+conformance validator plus repository-local CI for those contracts. It does not
+provide a runtime, project generator, automated policy enforcement, or an
+adoption fixture. Adoption initializes governance; it does not initialize product
+technology.
 
 ## 2. Ownership and Minimum Control Plane
 
@@ -186,9 +187,9 @@ the recorded scope.
 
 ## 9. Sequenced Capabilities
 
-- **I2, if separately authorized:** deterministic offline validator; valid and
-  invalid fixtures; schema and cross-record conformance tests; validator exit-code
-  behavior; and repository-local CI.
+- **I2, implemented in this unreleased candidate:** deterministic offline
+  validator; valid and invalid fixtures; schema and cross-record conformance
+  tests; validator exit-code behavior; and repository-local CI.
 - **I3, if separately authorized:** minimal clean-room adopter; non-authoritative
   GitHub Steward fixture; offline adoption test; independent release review; and
   AFEF v0.2.0 release preparation.
