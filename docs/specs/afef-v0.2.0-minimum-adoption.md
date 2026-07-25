@@ -119,7 +119,8 @@ direct files only, reject unsupported extensions, and sort discovered
 project-relative paths lexically. Missing, empty, duplicate, overlapping, or
 escaping record directories and duplicate discovered records are contract
 nonconformance. An unreadable directory or filesystem failure is an operational
-failure for future I2. Nested directories are not traversed.
+failure under the implemented I2 validator. Nested directories are not
+traversed.
 
 ## 6. Risk Profiles and Authorization
 
@@ -190,11 +191,18 @@ the recorded scope.
 - **I2, implemented in this unreleased candidate:** deterministic offline
   validator; valid and invalid fixtures; schema and cross-record conformance
   tests; validator exit-code behavior; and repository-local CI.
-- **I3, if separately authorized:** minimal clean-room adopter; non-authoritative
-  GitHub Steward fixture; offline adoption test; independent release review; and
-  AFEF v0.2.0 release preparation.
+- **I3, implemented and under review in this unreleased candidate:** a synthetic,
+  generic minimum adopter created outside the framework checkout; offline
+  invocation of the real validator; deterministic conformance failures; and
+  adopter and framework-runtime non-mutation proof.
 - **Post-v0.2.0:** project generators or initializers; agent runtime or
   orchestration; automated governance or policy enforcement; and broader tooling
   justified by adoption experience.
 
-This sequence does not authorize I2, I3, release, publication, or remote mutation.
+Real GitHub Steward adoption requires a separately defined and authorized
+post-publication work package. AFEF v0.2.0 release-candidate preparation and
+independent release review also require separately defined and authorized work.
+
+This sequence records candidate capabilities; it grants no implementation,
+adoption, release, publication, or remote-mutation authority and does not
+establish formal I3 acceptance or closure.
