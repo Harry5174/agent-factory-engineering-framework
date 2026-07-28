@@ -20,7 +20,7 @@ related_evidence: []
 
 # <SPECIFICATION_TITLE>
 
-> Unreleased AFEF v0.2.0 design-candidate template. Metadata conforms to
+> AFEF v0.2.0 minimum-adoption template. Metadata conforms to
 > [`specification.schema.json`](../../schemas/v0.2/specification.schema.json);
 > lifecycle rules are in the
 > [Specification Lifecycle Protocol](../protocols/specification-lifecycle-protocol.md).

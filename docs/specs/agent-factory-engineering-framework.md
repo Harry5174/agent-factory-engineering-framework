@@ -1,6 +1,6 @@
 # Agent Factory Engineering Framework — Specification
 
-**Framework version:** `0.1.0`
+**Framework version:** `0.2.0`
 
 **Implementation model:** Documentation-first and human-operated
 
@@ -14,8 +14,13 @@ The Agent Factory Engineering Framework (AFEF) provides reusable engineering-gov
 - Evidence, review, and overclaim-prevention protocols
 - Safety boundaries for local and externally effectful work
 - Memory templates for adopter-owned operational records
+- Exactly three minimum-adoption schemas for project manifests, specifications,
+  and work records
+- A narrow deterministic offline conformance validator, repository-local CI, and
+  deterministic valid, invalid, and clean-room adoption tests
 
-AFEF is not an agent runtime, product runtime, workflow engine, or automated enforcement layer.
+AFEF is not an agent runtime, product runtime, workflow engine, project
+generator, or automatic authorization system.
 
 ## 2. Ownership Model
 
@@ -129,8 +134,23 @@ Evidence must record the relevant repository state, exact validation commands, e
 
 Evidence review produces findings and recommendations. It does not by itself grant implementation, publication, or release authority.
 
-## 9. v0.1.0 Limitations
+## 9. v0.2.0 Scope and Limitations
 
-Version `0.1.0` is documentation-first. It does not provide schemas, validators, a CLI, CI integration, reusable Actions, automatic prompt generation, machine-readable governance, or adoption fixtures. Gate-vocabulary normalization and lifecycle automation require separately authorized future work.
+Version `0.2.0` remains a human-operated engineering and governance framework.
+Its three schemas and narrow deterministic offline validator check only the
+conformance represented by project-manifest, specification, and work-record
+content. Repository-local CI runs the framework's own deterministic suite, which
+includes valid and invalid fixtures and a synthetic clean-room adoption proof.
+
+The validator cannot prove factual truth, real-world or cryptographic human
+identity, separation of control, approval authenticity, continuing authority,
+real-world execution, production readiness, publication, or deployment. It does
+not approve, authorize, execute, publish, repair, or automatically create or
+modify adopter records.
+
+AFEF does not provide a general CLI, reusable GitHub Action, project generator,
+workflow engine, agent or product runtime, production deployment, or proof of
+adoption by a real project. Neither version declaration nor framework publication
+constitutes adoption by GitHub Steward.
 
 The documented version is not by itself evidence of a published revision, annotated tag, GitHub Release, adoption, or production maturity.

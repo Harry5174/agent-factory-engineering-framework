@@ -1,13 +1,14 @@
 ---
 target_version: 0.2.0
-status: unreleased_design_candidate
+status: active_baseline
 release_authority: not_established_by_this_document
 ---
 
 # AFEF v0.2.0 Minimum-Adoption Specification
 
-This document is an unreleased design candidate. It does not establish that AFEF
-v0.2.0 has been released, published, validated, or adopted.
+This document defines the active v0.2.0 minimum-adoption baseline. The document
+itself does not prove a default-branch revision, annotated tag, GitHub Release,
+adoption, authorization, production readiness, or production deployment.
 
 ## 1. Purpose and Boundary
 
@@ -16,10 +17,10 @@ conduct bounded discovery, record its constitution, approve authoritative intent
 authorize implementation in proportion to risk, and preserve implementation
 evidence and a final gate.
 
-This candidate defines documentation contracts and includes a narrow offline
+This baseline defines documentation contracts and includes a narrow offline
 conformance validator plus repository-local CI for those contracts. It does not
-provide a runtime, project generator, automated policy enforcement, or an
-adoption fixture. Adoption initializes governance; it does not initialize product
+provide a runtime, project generator, automated policy enforcement, or automatic
+adoption. Adoption initializes governance; it does not initialize product
 technology.
 
 ## 2. Ownership and Minimum Control Plane
@@ -188,10 +189,12 @@ the recorded scope.
 
 ## 9. Sequenced Capabilities
 
-- **I2, implemented in this unreleased candidate:** deterministic offline
+- **I1, implemented and accepted:** exactly three minimum-adoption record
+  contracts, schemas, and compact starting templates.
+- **I2, implemented and accepted:** deterministic offline
   validator; valid and invalid fixtures; schema and cross-record conformance
   tests; validator exit-code behavior; and repository-local CI.
-- **I3, implemented and under review in this unreleased candidate:** a synthetic,
+- **I3 and I3-CR1, implemented and accepted:** a synthetic,
   generic minimum adopter created outside the framework checkout; offline
   invocation of the real validator; deterministic conformance failures; and
   adopter and framework-runtime non-mutation proof.
@@ -199,10 +202,9 @@ the recorded scope.
   orchestration; automated governance or policy enforcement; and broader tooling
   justified by adoption experience.
 
-Real GitHub Steward adoption requires a separately defined and authorized
-post-publication work package. AFEF v0.2.0 release-candidate preparation and
-independent release review also require separately defined and authorized work.
+Real GitHub Steward adoption requires a separately defined and authorized work
+package. It is distinct from AFEF version declaration, publication, and release.
 
-This sequence records candidate capabilities; it grants no implementation,
+This sequence records active baseline capabilities; it grants no implementation,
 adoption, release, publication, or remote-mutation authority and does not
-establish formal I3 acceptance or closure.
+establish production readiness or deployment.

@@ -1,16 +1,12 @@
 # AFEF Documentation
 
-This directory contains active documentation for Agent Factory Engineering Framework (AFEF) version `0.1.0`. The designated canonical repository and the sources used to verify publication and release state are described in the [central release-verification guidance](../README.md#version-publication-and-release-verification).
-
-The v0.1.0 material below remains active. The separately identified v0.2.0
-artifacts are unreleased design candidates; they do not establish publication,
-release, validation, or adoption.
+This directory contains active documentation for Agent Factory Engineering Framework (AFEF) version `0.2.0`. The designated canonical repository and the sources used to verify publication and release state are described in the [central release-verification guidance](../README.md#version-publication-and-release-verification).
 
 ## Specification
 
 - [Agent Factory Engineering Framework specification](specs/agent-factory-engineering-framework.md)
 
-### Unreleased v0.2.0 Design Candidate
+### Minimum Adoption
 
 - [Minimum-adoption specification](specs/afef-v0.2.0-minimum-adoption.md)
 
@@ -27,7 +23,7 @@ release, validation, or adoption.
 - [Decision logging](protocols/decision-log-protocol.md)
 - [Overclaim prevention](protocols/overclaim-prevention-protocol.md)
 
-### Unreleased v0.2.0 Candidate Protocols
+### Discovery and Delivery Protocols
 
 - [Project discovery](protocols/project-discovery-protocol.md)
 - [Specification lifecycle](protocols/specification-lifecycle-protocol.md)
@@ -45,7 +41,7 @@ release, validation, or adoption.
 - [Next-session handoff](templates/next-session-handoff-template.md)
 - [Template quality checklist](templates/template-quality-checklist.md)
 
-### Unreleased v0.2.0 Candidate Contracts and Templates
+### Minimum-Adoption Contracts and Templates
 
 - [Deterministic adopter validation](validation.md)
 - [`project-manifest.schema.json`](../schemas/v0.2/project-manifest.schema.json)
@@ -70,6 +66,9 @@ These are reusable source templates. Adopters instantiate operational copies und
 
 - [Repository overview and current limitations](../README.md)
 - [Version declaration](../VERSION)
+- [Changelog](../CHANGELOG.md)
+- [v0.2.0 release notes](releases/v0.2.0.md)
+- [Validation guide](validation.md)
 - [Governance](../GOVERNANCE.md)
 - [AFDF extraction provenance](provenance/afdf-extraction.md)
 

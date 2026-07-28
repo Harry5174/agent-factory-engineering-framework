@@ -118,6 +118,6 @@ records. Validation reports conformance only. It does not approve, authorize,
 repair, rewrite, execute, publish, or release adopter work. Publication and every
 external operation require separate authority.
 
-This guide describes a minimum unreleased v0.2.0 design-candidate baseline and a
-local clean-room conformance flow. It is not production-readiness evidence,
-publication or release evidence, or proof of adoption by an actual project.
+This guide describes the minimum v0.2.0 baseline and its local clean-room
+conformance flow. It is not production-readiness evidence, publication or
+release evidence, or proof of adoption by an actual project.

@@ -1,6 +1,6 @@
 # Technical Debt Template
 
-> **Framework version:** `0.1.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
 
 > **Instructions:** Record technical debt items as they are identified. Prioritize by risk and urgency. Update when items are resolved.
 

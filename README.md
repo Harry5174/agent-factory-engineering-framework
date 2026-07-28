@@ -2,11 +2,11 @@
 
 **Repository:** `agent-factory-engineering-framework`
 
-**Framework version:** `0.1.0`
+**Framework version:** `0.2.0`
 
-The Agent Factory Engineering Framework (AFEF) is a documentation-first development and engineering-governance framework for planning, implementing, reviewing, and handing off bounded work. It provides human-operated specifications, protocols, templates, and memory templates.
+The Agent Factory Engineering Framework (AFEF) is a human-operated development and engineering-governance framework for planning, implementing, reviewing, and handing off bounded work. It provides specifications, protocols, templates, memory templates, exactly three minimum-adoption schemas, and a narrow deterministic offline conformance validator.
 
-AFEF is not an agent runtime, product runtime, workflow engine, CLI, validator, or automated policy-enforcement system. It does not execute tools or replace human review.
+AFEF is not an agent runtime, product runtime, workflow engine, project generator, general CLI, or automatic authorization system. It does not execute adopter work or replace human review.
 
 ## Version, Publication, and Release Verification
 
@@ -21,7 +21,7 @@ These sources answer distinct questions:
 - **Released revision:** the applicable annotated Git tag and GitHub Release metadata.
 - **Historical provenance:** the provenance record and commit map in [AFDF extraction provenance](docs/provenance/afdf-extraction.md).
 
-Framework version `0.1.0` identifies the documented baseline. It is not by itself evidence of a Git tag, GitHub Release, published revision, adopter approval, or production maturity.
+Framework version `0.2.0` identifies the documented baseline. It is not by itself evidence of a Git tag, GitHub Release, published revision, adopter approval, or production maturity.
 
 ## Historical Provenance
 
@@ -39,7 +39,7 @@ AFEF separates reusable framework guidance from adopter-owned operational state:
 - Every implementation sprint requires explicit authorization and bounded evidence.
 - Publication, tags, and releases require separate authorization.
 
-GitHub Steward is a possible future adopter. It is not an AFEF runtime dependency, is not initialized by this baseline, and has not adopted AFEF.
+GitHub Steward is a possible adopter, not an AFEF runtime dependency. Neither an AFEF version declaration nor framework publication constitutes GitHub Steward adoption.
 
 ## Roles
 
@@ -61,6 +61,9 @@ See [Governance](GOVERNANCE.md) for the authority boundaries.
 - [Templates](docs/templates/README.md)
 - [Memory templates](docs/memory/project-memory-template.md)
 - [Session bootstrap](session-bootstrap.md)
+- [Validation guide](docs/validation.md)
+- [Changelog](CHANGELOG.md)
+- [v0.2.0 release notes](docs/releases/v0.2.0.md)
 - [Governance](GOVERNANCE.md)
 - [Extraction provenance](docs/provenance/afdf-extraction.md)
 - [License](LICENSE)
@@ -84,15 +87,15 @@ Use [session-bootstrap.md](session-bootstrap.md) and the relevant role template 
 4. Submit evidence for independent review without issuing a self-approval decision.
 5. Update adopter-owned `.afef/` records only when the sprint explicitly authorizes that update.
 
-## v0.1.0 Limitations
+## v0.2.0 Scope and Limitations
 
-- AFEF is documentation-first and manually operated.
-- It has no schemas, validators, CLI, CI integration, or reusable Actions.
-- It does not define a machine-readable governance contract.
-- It includes no adopter fixture and performs no automatic adoption.
-- Gate vocabulary and lifecycle automation remain candidates for a future, separately authorized version.
-- Publication, release availability, and independent-review state require verification from the applicable Git refs, GitHub Release metadata, and release evidence.
+- AFEF remains human-operated and provides exactly three minimum-adoption schemas: project manifest, specification, and work record.
+- Its narrow deterministic offline validator checks represented record conformance only. It does not approve, authorize, execute, publish, repair, or create or modify adopter records.
+- Repository-local CI validates AFEF's own suite. Deterministic valid/invalid tests and a synthetic clean-room adoption test prove the bounded validator behavior, not real-adopter operation.
+- Validation cannot prove factual truth, real-world or cryptographic human identity, separation of control, approval authenticity, continuing authority, real-world execution, production readiness, publication, or deployment.
+- AFEF does not provide a project generator, workflow engine, agent or product runtime, reusable GitHub Action, production deployment, or real-adopter proof.
+- Publication and release availability require verification from the applicable Git refs and GitHub Release metadata.
 
 ## Claims Boundary
 
-This documentation baseline supports publication and release review. It does not by itself establish a published or released revision, freeze AFDF, define AFEF v0.2.0, establish GitHub Steward adoption, or demonstrate a production deployment.
+This documentation baseline supports publication and release review. It does not by itself establish a published or released revision, freeze AFDF, establish GitHub Steward adoption, authorize adopter work, or demonstrate a production deployment.

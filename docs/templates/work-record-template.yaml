@@ -1,4 +1,4 @@
-# Unreleased AFEF v0.2.0 design candidate.
+# AFEF v0.2.0 minimum-adoption template.
 # Contract: ../../schemas/v0.2/work-record.schema.json
 # Delivery rules: ../protocols/risk-scaled-delivery-protocol.md
 # Placeholder actor and authorization references are not identity or approval proof.

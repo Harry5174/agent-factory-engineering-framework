@@ -1,4 +1,4 @@
-# Unreleased AFEF v0.2.0 design candidate.
+# AFEF v0.2.0 minimum-adoption template.
 # Contract: ../../schemas/v0.2/project-manifest.schema.json
 # Normative location: <project-root>/.afef/project-manifest.yaml
 # Placeholder actor IDs and labels are not identity or approval proof.

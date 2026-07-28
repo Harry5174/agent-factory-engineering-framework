@@ -1,6 +1,6 @@
 # Next Session Handoff Template
 
-> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To explicitly pass context from a completed sprint to the next IDE agent session, preserving project state and ensuring continuity without drift.

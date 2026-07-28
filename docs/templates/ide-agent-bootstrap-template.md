@@ -1,6 +1,6 @@
 # IDE Agent Bootstrap Template
 
-> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To instruct an IDE Agent to execute a specific sprint safely, within scope boundaries, and to return verifiable evidence upon completion.

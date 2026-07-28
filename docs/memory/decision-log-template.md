@@ -1,6 +1,6 @@
 # Decision Log Template
 
-> **Framework version:** `0.1.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. AFEF owns this source template; an adopting repository owns instantiated operational records under `.afef/`.
 
 > **Instructions:** Add an entry for every significant decision. Decisions include architectural choices, scope changes, rejected alternatives, and safety boundary exceptions. This log preserves **why** decisions were made.
 

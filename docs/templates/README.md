@@ -1,14 +1,14 @@
 # Templates Index
 
-> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 This directory contains reusable, fill-in-the-blank templates for each stage of the AFEF lifecycle.
 
-## Unreleased v0.2.0 Candidate Adoption Templates
+## v0.2.0 Minimum-Adoption Templates
 
-These compact templates implement the candidate three-record adoption model. They
-are unreleased design candidates and do not establish v0.2.0 publication, release,
-validation, or adoption.
+These compact templates implement the three-record adoption model. They are
+starting points and do not establish identity, factual truth, approval,
+authorization, evidence, completed work, publication, release, or adoption.
 
 - [Project manifest](project-manifest-template.yaml) — minimal adopter-owned
   project identity, immutable AFEF pin, constitution, paths, and safety policy.
@@ -18,8 +18,8 @@ validation, or adoption.
   implementation evidence, review recommendation, human checkpoint, and final
   gate.
 
-Their corresponding candidate schema contracts are indexed in the
-[documentation index](../README.md#unreleased-v020-candidate-contracts-and-templates).
+Their corresponding schema contracts are indexed in the
+[documentation index](../README.md#minimum-adoption-contracts-and-templates).
 
 ---
 

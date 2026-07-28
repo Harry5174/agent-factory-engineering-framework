@@ -1,6 +1,6 @@
 # Template Quality Checklist
 
-> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 Use this checklist to evaluate whether a prompt, bootstrap, or template is ready for use. A template that fails multiple checks is likely to cause drift, overclaims, or safety issues.
 

@@ -1,6 +1,6 @@
 # Sprint Prompt Template
 
-> **Framework version:** `0.1.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
+> **Framework version:** `0.2.0`. This framework-owned template does not authorize work; adopters own instantiated operational records under `.afef/`.
 
 ## Purpose
 To outline a specific unit of work (a sprint) for an agent, defining scope, context, safety, and exact deliverables.
